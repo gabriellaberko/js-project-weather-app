@@ -1,0 +1,63 @@
+body {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.weather-overview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 580px;
+  padding: 0 40px;
+  /* background-color: linear-gradient(to right, #8589FF, #E8E9FF); */
+  background: linear-gradient(120deg,rgba(133, 137, 255, 1) 0%, rgba(232, 233, 255, 1) 65%);
+  clip-path: ellipse(110% 75% at 50% 10%);
+  z-index: 0;
+}
+
+
+.weather-symbol-box {
+  align-self: flex-end;
+  margin-right: 30px;
+}
+
+.arrow-button {
+  background-color: rgba(117, 122, 255, 1);
+  color: white;
+  font-size: 44px;
+  border: none;
+  width: 101px;
+  height: 101px;
+  border-radius: 50%;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+  position: absolute;
+  align-self: flex-end;
+  display: block;
+  justify-self: flex-end;
+  margin-bottom: 42px;
+  margin-right: 20px;
+}
+
+.weekly-details {
+  z-index: 0;
+}
+
+.day-box {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 76px;
+  min-height: 56px;
+  padding: 0 32px;
+}
+
+.day-box:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.details {
+  display: flex;
+  gap: 32px;
+}
+
+
