@@ -9,32 +9,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const url = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-const test = "hej";
-// interface SunriseData {
-//   country: string
-//   sunrise: number
-//   sunset: number
-//   timezone: number
-// }
-// Const weatherObj = {
-//   Country: Sweden,
-//   sunrise: 12:00
-// }
-const fetchData = () => __awaiter(void 0, void 0, void 0, function* () {
+const filteredUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json?timeseries=48&parameters=air_temperature,symbol_code`;
+const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
+[];
+const weatherArray = [];
+const addToWeatherArray = (weatherData) => {
+    weatherArray.push(weatherData);
+};
+const mapFetchedData = (fetchedWeatherReports) => {
+    fetchedWeatherReports.map((report) => {
+        const time = report.time;
+        const temperature = report.data.air_temperature;
+        const symbol = report.data.symbol_code;
+        addToWeatherArray({
+            time: time,
+            temperature: `${temperature} °C`,
+            symbol: symbol
+        });
+    });
+};
+const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield fetch(url);
-        console.log(response);
+        const response = yield fetch(filteredUrl);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const data = yield response.json();
-        const timeSeries = data.timeSeries;
-        console.log(data);
-        console.log(response);
+        const fetchedWeatherReports = (yield response.json()).timeSeries;
+        mapFetchedData(fetchedWeatherReports);
     }
     catch (error) {
         console.error('Fetch error:', error);
     }
 });
-fetchData();
+document.addEventListener("DOMContentLoaded", () => {
+    fetchWeatherData();
+});
 //# sourceMappingURL=script.js.map
