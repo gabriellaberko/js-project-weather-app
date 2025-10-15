@@ -21,6 +21,11 @@ body {
   margin-right: 30px;
 }
 
+.weather-icon-box img {
+  min-width: 150px;
+  height: auto;
+}
+
 .arrow-button {
   background-color: rgba(117, 122, 255, 1);
   color: white;
