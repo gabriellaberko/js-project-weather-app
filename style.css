@@ -6,7 +6,7 @@ body {
 .weather-overview {
   display: flex;
   flex-direction: column;
-  height: 600px;
+  height: 580px;
   padding: 0 40px;
   color: white;
   background: linear-gradient(120deg,rgba(133, 137, 255, 1) 0%, rgba(232, 233, 255, 1) 65%);
@@ -54,15 +54,16 @@ body {
 }
 
 .weekly-details {
-  z-index: 0;
+  margin-top: 7px;
+  margin-bottom: 32px;
 }
 
 .day-box {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   border-radius: 76px;
   min-height: 56px;
-  padding: 0 32px;
+  padding: 7px 0px;
 }
 
 .day-box:hover {
