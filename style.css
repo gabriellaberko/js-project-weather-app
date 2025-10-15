@@ -3,6 +3,11 @@ body {
   margin: 0;
 }
 
+.app-container {
+  max-width: 500px;
+  box-shadow: 0 0 5px rgb(193, 193, 193);
+}
+
 .weather-overview {
   display: flex;
   flex-direction: column;
@@ -55,7 +60,7 @@ body {
 
 .weekly-details {
   margin-top: 7px;
-  margin-bottom: 32px;
+  padding-bottom: 32px;
 }
 
 .day-box {

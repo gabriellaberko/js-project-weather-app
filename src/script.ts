@@ -1,4 +1,3 @@
-
 const url: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 
 // TO DO: change longitude & latitude (lon & lat) values to variables that we fetch from geoURL

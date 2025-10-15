@@ -7,61 +7,63 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div class="weather-overview">
-    <div class="weather-summary">
-      <div class="weather-icon-box">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/03.svg" alt="weather icon">     
+  <div class="app-container">
+    <div class="weather-overview">
+      <div class="weather-summary">
+        <div class="weather-icon-box">
+          <img id="weather-icon" src="weather_icons/centered/stroke/day/03.svg" alt="weather icon">     
+        </div>
+        <div class="weather-text">
+          <h1>11°C</h1>
+          <h2>Stockholm</h2>
+          <p>Time: 15:00</p>
+          <p>Broken Clouds</p>
+        </div>
       </div>
-      <div class="weather-text">
-        <h1>11°C</h1>
-        <h2>Stockholm</h2>
-        <p>Time: 15:00</p>
-        <p>Broken Clouds</p>
+      <div class="sunrise-sunset">
+        <p>Sunrise: 07:25</p>
+        <p>Sunset: 17:41</p>
       </div>
     </div>
-    <div class="sunrise-sunset">
-      <p>Sunrise: 07:25</p>
-      <p>Sunset: 17:41</p>
-    </div>
+    <button class="arrow-button">&#10095;</button>
+    <div class="weekly-details">
+      <div class="day-box">
+        <p class="day">Mon</p>
+        <div class="details">
+          <img id="weather-icon" src="weather_icons/centered/stroke/day/03.svg" alt="weather icon">    
+          <p class="degrees">26° / 12 °C</p>
+        </div>
+      </div>
+      <div class="day-box">
+        <p class="day">Tue</p>
+        <div class="details">
+          <img id="weather-icon" src="weather_icons/centered/stroke/day/04.svg" alt="weather icon">    
+          <p class="degrees">26° / 12 °C</p>
+        </div>
+      </div>
+      <div class="day-box">
+        <p class="day">Wed</p>
+        <div class="details">
+          <img id="weather-icon" src="weather_icons/centered/stroke/day/05.svg" alt="weather icon">    
+          <p class="degrees">26° / 12 °C</p>
+        </div>
+      </div>
+      <div class="day-box">
+        <p class="day">Thu</p>
+        <div class="details">
+          <img id="weather-icon" src="weather_icons/centered/stroke/day/04.svg" alt="weather icon">    
+          <p class="degrees">26° / 12 °C</p>
+        </div>
+      </div>
+      <div class="day-box">
+        <p class="day">Fri</p>
+        <div class="details">
+          <img id="weather-icon" src="weather_icons/centered/stroke/day/09.svg" alt="weather icon">    
+          <p class="degrees">26° / 12 °C</p>
+        </div>
+      </div>
+    </div> 
+    <script src="dist/script.js"></script>
   </div>
-  <button class="arrow-button">&#10095;</button>
-  <div class="weekly-details">
-    <div class="day-box">
-      <p class="day">Mon</p>
-      <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/03.svg" alt="weather icon">    
-        <p class="degrees">26° / 12 °C</p>
-      </div>
-    </div>
-    <div class="day-box">
-      <p class="day">Tue</p>
-      <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/04.svg" alt="weather icon">    
-        <p class="degrees">26° / 12 °C</p>
-      </div>
-    </div>
-    <div class="day-box">
-      <p class="day">Wed</p>
-      <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/05.svg" alt="weather icon">    
-        <p class="degrees">26° / 12 °C</p>
-      </div>
-    </div>
-    <div class="day-box">
-      <p class="day">Thu</p>
-      <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/04.svg" alt="weather icon">    
-        <p class="degrees">26° / 12 °C</p>
-      </div>
-    </div>
-    <div class="day-box">
-      <p class="day">Fri</p>
-      <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/09.svg" alt="weather icon">    
-        <p class="degrees">26° / 12 °C</p>
-      </div>
-    </div>
-  </div> 
-  <script src="dist/script.js"></script>
 </body>
 </html>
