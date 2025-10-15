@@ -6,19 +6,28 @@ body {
 .weather-overview {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  height: 580px;
+  height: 600px;
   padding: 0 40px;
-  /* background-color: linear-gradient(to right, #8589FF, #E8E9FF); */
+  color: white;
   background: linear-gradient(120deg,rgba(133, 137, 255, 1) 0%, rgba(232, 233, 255, 1) 65%);
   clip-path: ellipse(110% 75% at 50% 10%);
   z-index: 0;
 }
 
+.weather-summary {
+  display: flex;
+  flex-direction: column;
+  margin-top: 42px;
+}
+
+.sunrise-sunset {
+  display: flex;
+  gap: 42px;
+}
 
 .weather-icon-box {
-  align-self: flex-end;
   margin-right: 30px;
+  align-self: flex-end;
 }
 
 .weather-icon-box img {
@@ -62,7 +71,7 @@ body {
 
 .details {
   display: flex;
-  gap: 32px;
+  gap: 42px;
 }
 
 
