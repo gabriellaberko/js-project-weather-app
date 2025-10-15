@@ -3,6 +3,7 @@ body {
   margin: 0;
 }
 
+/* TO DO: center the container on bigger screens */
 .app-container {
   max-width: 500px;
   box-shadow: 0 0 5px rgb(193, 193, 193);
