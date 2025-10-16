@@ -91,7 +91,6 @@ const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, f
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling insertWeatherData
     insertWeatherData(municipality, county);
-    // TO DO: call function (that will insert the information on the page) with the arguments of municipality & county
 });
 const insertWeatherData = (municipality, county) => {
     // reset element before filling it
@@ -99,11 +98,18 @@ const insertWeatherData = (municipality, county) => {
     // if missing location or weather data
     if ((!places || places.length === 0) || (!weatherArray || weatherArray.length === 0)) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
+        return;
     }
     weatherText.innerHTML += `
-    <h1>11°C</h1>
-    <h2>Stockholm</h2>
-    <p>Time: 15:00</p>
+    <h1>${weatherArray[0].temperature}</h1>
+    <h2>${municipality},</h2>
+    <h3>${county}</h3>
+    <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    })}
+    </p>
     <p>Broken Clouds</p>
   `;
 };
@@ -150,7 +156,7 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
             const symbolCode = report.data.symbol_code;
             const symbolMeaning = mapSymbolCode(symbolCode);
             weatherData = {
-                time: report.time,
+                time: report.time, // TO DO: transform to right timezone
                 temperature: `${report.data.air_temperature}°C`,
                 symbolNumber: report.data.symbol_code,
                 symbolMeaning: symbolMeaning,

@@ -142,8 +142,7 @@ const getLocationAndCoordinates = async (index: number) => {
 
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling insertWeatherData
-  insertWeatherData(municipality, county)
-  // TO DO: call function (that will insert the information on the page) with the arguments of municipality & county
+  insertWeatherData(municipality, county);
 };
 
 
@@ -152,16 +151,24 @@ const insertWeatherData = (municipality: string, county: string) => {
 
   // reset element before filling it
   weatherText.innerHTML = "";
+  
 
   // if missing location or weather data
   if((!places || places.length === 0) || (!weatherArray || weatherArray.length === 0) ) {
     weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
+    return;
   }
 
   weatherText.innerHTML += `
-    <h1>11°C</h1>
-    <h2>Stockholm</h2>
-    <p>Time: 15:00</p>
+    <h1>${weatherArray[0].temperature}</h1>
+    <h2>${municipality},</h2>
+    <h3>${county}</h3>
+    <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    })}
+    </p>
     <p>Broken Clouds</p>
   `
 };
@@ -231,7 +238,7 @@ const fetchWeatherData = async () => {
       const symbolMeaning = mapSymbolCode(symbolCode);
 
       weatherData = {
-        time: report.time,
+        time: report.time, // TO DO: transform to right timezone
         temperature: `${report.data.air_temperature}°C`,
         symbolNumber: report.data.symbol_code,
         symbolMeaning: symbolMeaning,
