@@ -1,5 +1,4 @@
 "use strict";
-// TO DO: change longitude & latitude (lon & lat) values to variables that we fetch from geoURL
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,8 +9,62 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 /*------ Global variables --------*/
+let lon = 18.062639; // Stockholm
+let lat = 59.329468; // Stockholm
+const weatherSymbols = [
+    { id: 1, description: "Clear sky" },
+    { id: 2, description: "Nearly clear sky" },
+    { id: 3, description: "Variable cloudiness" },
+    { id: 4, description: "Halfclear sky" },
+    { id: 5, description: "Cloudy sky" },
+    { id: 6, description: "Overcast" },
+    { id: 7, description: "Fog" },
+    { id: 8, description: "Light rain showers" },
+    { id: 9, description: "Moderate rain showers" },
+    { id: 10, description: "Heavy rain showers" },
+    { id: 11, description: "Thunderstorm" },
+    { id: 12, description: "Light sleet showers" },
+    { id: 13, description: "Moderate sleet showers" },
+    { id: 14, description: "Heavy sleet showers" },
+    { id: 15, description: "Light snow showers" },
+    { id: 16, description: "Moderate snow showers" },
+    { id: 17, description: "Heavy snow showers" },
+    { id: 18, description: "Light rain" },
+    { id: 19, description: "Moderate rain" },
+    { id: 20, description: "Heavy rain" },
+    { id: 21, description: "Thunder" },
+    { id: 22, description: "Light sleet" },
+    { id: 23, description: "Moderate sleet" },
+    { id: 24, description: "Heavy sleet" },
+    { id: 25, description: "Light snowfall" },
+    { id: 26, description: "Moderate snowfall" },
+    { id: 27, description: "Heavy snowfall" }
+];
+// use this variable for set locations?
+const places = [
+    {
+        country: "Sverige",
+        county: "Stockholms län",
+        municipality: "Stockholm",
+        lon: 18.062639,
+        lat: 59.329468
+    },
+    {
+        country: "Sverige",
+        county: "Västra Götalands län",
+        municipality: "Göteborg",
+        lon: 11.966666,
+        lat: 57.716666
+    },
+    {
+        country: "Sverige",
+        county: "Västerbottens län",
+        municipality: "Umeå",
+        lon: 20.25,
+        lat: 63.833333
+    }
+];
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json?timeseries=48&parameters=air_temperature,symbol_code`;
 const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
 [];
 [];
@@ -23,26 +76,23 @@ let geoData;
 const weatherArray = [];
 const geoArray = [];
 // let geoDataArray: GeoWeatherDataFormat[] = [];
-// TO DO: map each values. Should probably use a more effective method of looping through values
-const mapSymbolCode = (symbolCode) => {
-    let meaning = "";
-    if (symbolCode === 1) {
-        meaning = "Clear sky";
+// TO DO: create a function that loops through the variable places and takes lon & lat values to be used as dynamic values in filteredWeatherUrl. Called upon DOM load & click on arrow button??
+const getCoordinates = (index) => {
+    if (places && places.length > 0) {
+        lon = places[index].lon;
+        lat = places[index].lat;
+        // fetch new data with update coordinates
+        fetchWeatherData();
     }
     else {
-        meaning = "Something else";
+        return;
     }
-    return meaning;
 };
-// const getGeoWeatherArray = (weatherArray: WeatherDataFormat[], geoArray: GeoDataFormat[]) => {
-//   // get longitude & latitude from weatherArray
-//   const lon = weatherArray[0].lon;
-//   const lat = weatherArray[0].lat;
-//   // create variable with the object in geoArray that match the lon and lat from above
-//   const matchingGeoObject = geoArray.find(geoObject => geoObject.lon === lon && geoObject.lat === lat);
-//   // update geoDataArray with an array that looks like weatherArray but has the properties of matchingGeoObject in each object
-//   geoDataArray = weatherArray.map(weatherReport => ({...weatherReport, ...matchingGeoObject}));
-// };
+// TO DO: map each values. Should probably use a more effective method of looping through values
+const mapSymbolCode = (symbolCode) => {
+    // find matching id in weatherSymbols
+};
+// TO DO: create search input field and event listener for it. Use search input as dynamic value for the geoUrl and call fetchGeoData function. Fetch geo data and use properties from the first object (should be the best match?) in the array [0] ??
 const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield fetch(geoUrl);
@@ -55,8 +105,8 @@ const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
                 country: report.country,
                 county: report.county,
                 municipality: report.municipality,
-                lat: (report.lat).toFixed(6),
-                lon: (report.lon).toFixed(6)
+                lat: Number((report.lat).toFixed(6)),
+                lon: Number((report.lon).toFixed(6))
             };
             geoArray.push(geoData);
         });
@@ -66,14 +116,16 @@ const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
+    // create dynamic fetch url inside fetch function to get updated values for lon & lat
+    const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=48&parameters=air_temperature,symbol_code`;
     try {
         const response = yield fetch(filteredWeatherUrl);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = yield response.json();
-        const lon = (data.geometry.coordinates[0]).toFixed(6);
-        const lat = (data.geometry.coordinates[1]).toFixed(6);
+        const lon = Number((data.geometry.coordinates[0]).toFixed(6));
+        const lat = Number((data.geometry.coordinates[1]).toFixed(6));
         const fetchedWeatherReports = data.timeSeries;
         fetchedWeatherReports.map((report) => {
             const symbolCode = report.data.symbol_code;
@@ -94,7 +146,7 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 document.addEventListener("DOMContentLoaded", () => {
-    fetchGeoData();
-    fetchWeatherData();
+    //fetchGeoData();
+    getCoordinates(2);
 });
 //# sourceMappingURL=script.js.map
