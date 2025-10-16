@@ -1,4 +1,5 @@
 "use strict";
+/*------ DOM elements --------*/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const weatherText = document.getElementById("weather-text");
 /*------ Global variables --------*/
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
@@ -42,7 +44,6 @@ const weatherSymbols = [
     { id: 26, description: "Moderate snowfall" },
     { id: 27, description: "Heavy snowfall" }
 ];
-// use this variable for set locations?
 const places = [
     {
         country: "Sverige",
@@ -76,9 +77,11 @@ let geoData;
 const weatherArray = [];
 const geoArray = [];
 // TO DO: create a function that loops through the length of the variable places and returning an index - called upon click on arrow button
-const getLocationAndCoordinates = (index) => {
-    if (!places || places.length === 0)
-        return; // TO DO: also display error message here before return
+const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!places || places.length === 0) {
+        weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
+        return;
+    }
     const place = places[index];
     lon = place.lon;
     lat = place.lat;
@@ -86,10 +89,24 @@ const getLocationAndCoordinates = (index) => {
     const municipality = place.municipality || "Missing value";
     const county = place.county || "Missing value";
     // fetch new data with updated coordinates
-    fetchWeatherData();
+    yield fetchWeatherData(); // wait for data until calling insertWeatherData
+    insertWeatherData(municipality, county);
     // TO DO: call function (that will insert the information on the page) with the arguments of municipality & county
+});
+const insertWeatherData = (municipality, county) => {
+    // reset element before filling it
+    weatherText.innerHTML = "";
+    // if missing location or weather data
+    if ((!places || places.length === 0) || (!weatherArray || weatherArray.length === 0)) {
+        weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
+    }
+    weatherText.innerHTML += `
+    <h1>11°C</h1>
+    <h2>Stockholm</h2>
+    <p>Time: 15:00</p>
+    <p>Broken Clouds</p>
+  `;
 };
-// TO DO: create function that will insert the information on the page
 // TO DO: map each values. Should probably use a more effective method of looping through values
 const mapSymbolCode = (symbolCode) => {
     // find matching id in weatherSymbols

@@ -1,3 +1,4 @@
+declare const weatherText: HTMLElement;
 declare const weatherUrl: string;
 declare const geoUrl: string;
 declare let lon: number;
@@ -52,7 +53,8 @@ declare let weatherData: WeatherDataFormat;
 declare let geoData: GeoDataFormat;
 declare const weatherArray: WeatherDataFormat[];
 declare const geoArray: GeoDataFormat[];
-declare const getLocationAndCoordinates: (index: number) => void;
+declare const getLocationAndCoordinates: (index: number) => Promise<void>;
+declare const insertWeatherData: (municipality: string, county: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
 declare const fetchGeoData: () => Promise<void>;
 declare const fetchWeatherData: () => Promise<void>;
