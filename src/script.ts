@@ -1,4 +1,8 @@
 /*------ Global variables --------*/
+const weatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
+
+const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
+
 let lon: number = 18.062639; // Stockholm
 let lat: number = 59.329468; // Stockholm
 
@@ -58,14 +62,6 @@ const places: GeoDataFormat[] = [
 ];
 
 
-const weatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-
-
-const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
-
-
-
-
 /*------ Assign data types --------*/
 
 interface fetchedWeatherDataFormat {
@@ -81,7 +77,7 @@ interface fetchedGeoDataFormat {
   geonameid: number;
   lon: number;
   lat: number;
-  municipality: string;
+  municipality?: string;
   place: string;
   population: number;
   timezone: string;
@@ -99,7 +95,7 @@ interface WeatherDataFormat {
 interface GeoDataFormat {
   country: string;
   county: string;
-  municipality: string;
+  municipality?: string;
   lat: number;
   lon: number;
 };
@@ -107,7 +103,7 @@ interface GeoDataFormat {
 interface GeoWeatherDataFormat extends WeatherDataFormat {
   country: string;
   county: string;
-  municipality: string;
+  municipality?: string;
 };
 
 let weatherData: WeatherDataFormat;
@@ -124,13 +120,27 @@ const geoArray: GeoDataFormat[] = [];
 
 // TO DO: create a function that loops through the variable places and takes lon & lat values to be used as dynamic values in filteredWeatherUrl. Called upon DOM load & click on arrow button??
 
-const getCoordinates = (index: number) => {
+const getLocationAndCoordinates = (index: number) => {
   if(places && places.length > 0) {
     lon = places[index].lon;
     lat = places[index].lat;
-  
+
+    let municipality: string = "";
+    let county: string = "";
+
+    if(places[index].municipality) {
+       municipality = places[index]?.municipality;
+    }
+
+    if(places[index].county) {
+    county = places[index]?.county
+    }
+
+    console.log(municipality);
+    console.log(county);
     // fetch new data with update coordinates
     fetchWeatherData();
+
   } else {
     return;
   }
@@ -222,5 +232,5 @@ const fetchWeatherData = async () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   //fetchGeoData();
-  getCoordinates(2);
+  getLocationAndCoordinates(0);
 });

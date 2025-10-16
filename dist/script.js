@@ -9,6 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 /*------ Global variables --------*/
+const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
+const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
 let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
 const weatherSymbols = [
@@ -64,8 +66,6 @@ const places = [
         lat: 63.833333
     }
 ];
-const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
 [];
 [];
 ;
@@ -77,10 +77,21 @@ const weatherArray = [];
 const geoArray = [];
 // let geoDataArray: GeoWeatherDataFormat[] = [];
 // TO DO: create a function that loops through the variable places and takes lon & lat values to be used as dynamic values in filteredWeatherUrl. Called upon DOM load & click on arrow button??
-const getCoordinates = (index) => {
+const getLocationAndCoordinates = (index) => {
+    var _a, _b;
     if (places && places.length > 0) {
         lon = places[index].lon;
         lat = places[index].lat;
+        let municipality = "";
+        let county = "";
+        if (places[index].municipality) {
+            municipality = (_a = places[index]) === null || _a === void 0 ? void 0 : _a.municipality;
+        }
+        if (places[index].county) {
+            county = (_b = places[index]) === null || _b === void 0 ? void 0 : _b.county;
+        }
+        console.log(municipality);
+        console.log(county);
         // fetch new data with update coordinates
         fetchWeatherData();
     }
@@ -147,6 +158,6 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 document.addEventListener("DOMContentLoaded", () => {
     //fetchGeoData();
-    getCoordinates(2);
+    getLocationAndCoordinates(0);
 });
 //# sourceMappingURL=script.js.map
