@@ -1,6 +1,7 @@
 body {
   box-sizing: border-box;
   margin: 0;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* TO DO: center the container on bigger screens */

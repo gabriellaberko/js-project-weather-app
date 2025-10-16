@@ -75,30 +75,21 @@ let weatherData;
 let geoData;
 const weatherArray = [];
 const geoArray = [];
-// let geoDataArray: GeoWeatherDataFormat[] = [];
-// TO DO: create a function that loops through the variable places and takes lon & lat values to be used as dynamic values in filteredWeatherUrl. Called upon DOM load & click on arrow button??
+// TO DO: create a function that loops through the length of the variable places and returning an index - called upon click on arrow button
 const getLocationAndCoordinates = (index) => {
-    var _a, _b;
-    if (places && places.length > 0) {
-        lon = places[index].lon;
-        lat = places[index].lat;
-        let municipality = "";
-        let county = "";
-        if (places[index].municipality) {
-            municipality = (_a = places[index]) === null || _a === void 0 ? void 0 : _a.municipality;
-        }
-        if (places[index].county) {
-            county = (_b = places[index]) === null || _b === void 0 ? void 0 : _b.county;
-        }
-        console.log(municipality);
-        console.log(county);
-        // fetch new data with update coordinates
-        fetchWeatherData();
-    }
-    else {
-        return;
-    }
+    if (!places || places.length === 0)
+        return; // TO DO: also display error message here before return
+    const place = places[index];
+    lon = place.lon;
+    lat = place.lat;
+    //Fallback for municipality and county
+    const municipality = place.municipality || "Missing value";
+    const county = place.county || "Missing value";
+    // fetch new data with updated coordinates
+    fetchWeatherData();
+    // TO DO: call function (that will insert the information on the page) with the arguments of municipality & county
 };
+// TO DO: create function that will insert the information on the page
 // TO DO: map each values. Should probably use a more effective method of looping through values
 const mapSymbolCode = (symbolCode) => {
     // find matching id in weatherSymbols
