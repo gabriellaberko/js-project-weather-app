@@ -160,7 +160,7 @@ const insertWeatherData = (municipality: string, county: string) => {
   }
 
   weatherText.innerHTML += `
-    <h1>${weatherArray[0].temperature}</h1>
+    <h1>${weatherArray[0]?.temperature}</h1>
     <h2>${municipality},</h2>
     <h3>${county}</h3>
     <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
@@ -169,16 +169,19 @@ const insertWeatherData = (municipality: string, county: string) => {
       hour12: false
     })}
     </p>
-    <p>Broken Clouds</p>
+    <p>${weatherArray[0]?.symbolMeaning}</p>
   `
 };
 
 
-// TO DO: map each values. Should probably use a more effective method of looping through values
-const mapSymbolCode = (symbolCode: number): string => {
 
-  // find matching id in weatherSymbols
-
+const mapSymbolCode = (symbolCode: number) => {
+  // find the object in weatherSymbols that matches the symbol code
+  const rightWeatherObj = weatherSymbols.find(weatherSymbol => weatherSymbol.id ===
+    symbolCode)
+  
+  // return the description of that object
+  return(rightWeatherObj ? rightWeatherObj.description : "");
 };
 
 

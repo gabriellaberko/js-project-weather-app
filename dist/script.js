@@ -93,6 +93,7 @@ const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, f
     insertWeatherData(municipality, county);
 });
 const insertWeatherData = (municipality, county) => {
+    var _a, _b;
     // reset element before filling it
     weatherText.innerHTML = "";
     // if missing location or weather data
@@ -101,7 +102,7 @@ const insertWeatherData = (municipality, county) => {
         return;
     }
     weatherText.innerHTML += `
-    <h1>${weatherArray[0].temperature}</h1>
+    <h1>${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.temperature}</h1>
     <h2>${municipality},</h2>
     <h3>${county}</h3>
     <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
@@ -110,12 +111,15 @@ const insertWeatherData = (municipality, county) => {
         hour12: false
     })}
     </p>
-    <p>Broken Clouds</p>
+    <p>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.symbolMeaning}</p>
   `;
 };
-// TO DO: map each values. Should probably use a more effective method of looping through values
 const mapSymbolCode = (symbolCode) => {
-    // find matching id in weatherSymbols
+    // find the object in weatherSymbols that matches the symbol code
+    const rightWeatherObj = weatherSymbols.find(weatherSymbol => weatherSymbol.id ===
+        symbolCode);
+    // return the description of that object
+    return (rightWeatherObj ? rightWeatherObj.description : "");
 };
 // TO DO: create search input field and event listener for it. Use search input as dynamic value for the geoUrl and call fetchGeoData function. Fetch geo data and use properties from the first object (should be the best match?) in the array [0] ??
 const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
