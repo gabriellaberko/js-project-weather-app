@@ -236,9 +236,17 @@ const fetchWeatherData = async () => {
  
       const symbolCode = report.data.symbol_code;
       const symbolMeaning = mapSymbolCode(symbolCode);
+      const localTime = new Date(report.time).toLocaleString("sv-SE", {
+        timeZone: "Europe/Stockholm",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
 
       weatherData = {
-        time: report.time, // TO DO: transform to right timezone
+        time: localTime, 
         temperature: `${report.data.air_temperature}°C`,
         symbolNumber: report.data.symbol_code,
         symbolMeaning: symbolMeaning,
