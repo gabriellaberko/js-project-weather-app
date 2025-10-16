@@ -161,8 +161,7 @@ const insertWeatherData = (municipality: string, county: string) => {
 
   weatherText.innerHTML += `
     <h1>${weatherArray[0]?.temperature}</h1>
-    <h2>${municipality},</h2>
-    <h3>${county}</h3>
+    <h2>${municipality}, <br> ${county}</h2>
     <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
       hour: "2-digit",
       minute: "2-digit",

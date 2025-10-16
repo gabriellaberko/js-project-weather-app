@@ -24,7 +24,7 @@ body {
 .weather-summary {
   display: flex;
   flex-direction: column;
-  margin-top: 42px;
+  margin-top: 12px;
 }
 
 .sunrise-sunset {
