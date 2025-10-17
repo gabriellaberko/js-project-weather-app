@@ -75,6 +75,7 @@ const locations = [
 [];
 ;
 ;
+;
 // interface GeoWeatherDataFormat extends WeatherDataFormat {
 //   country: string;
 //   place: string;
@@ -85,6 +86,7 @@ let weatherData;
 const weatherArray = [];
 let geoData;
 const geoArray = [];
+let weatherArrayGroupedByDate = [];
 // TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
 const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, function* () {
     if (!locations || locations.length === 0) {
@@ -100,10 +102,71 @@ const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, f
     const place = location.place || "Missing value";
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling insertWeatherData
+    getWeeklyDetails();
     insertWeatherData(municipality, county, place);
 });
+const getWeeklyDetails = () => {
+    // // get the date 6 days from today in local time
+    // const currentDate = new Date();
+    // const currentLocalDate = currentDate.toLocaleString("sv-SE", {
+    //   // timeZone: "Europe/Stockholm",
+    //   year: "numeric",
+    //   month: "2-digit",
+    //   day: "2-digit",
+    // });
+    // const sixDaysFromToday = new Date(currentDate);
+    // sixDaysFromToday.setDate(currentDate.getDate()+6);
+    // const localSixDaysFromToday = sixDaysFromToday.toLocaleString("sv-SE", {
+    //   // timeZone: "Europe/Stockholm",
+    //   year: "numeric",
+    //   month: "2-digit",
+    //   day: "2-digit",
+    // });
+    // if(!(weatherReport.date <= sixDaysFromToday)){
+    //   return;
+    // }
+    weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects, weatherReport) => {
+        let existingGroupedObject = accumulatedGroupedObjects.find(groupedObject => groupedObject.date === weatherReport.date);
+        // create a new grouped object for the date
+        if (!existingGroupedObject) {
+            accumulatedGroupedObjects.push({
+                date: weatherReport.date,
+                dayOfWeek: weatherReport.dayOfWeek,
+                temperature: [weatherReport.temperature],
+                symbolCode: [weatherReport.symbolCode]
+            });
+        }
+        else {
+            existingGroupedObject.temperature.push(weatherReport.temperature);
+            existingGroupedObject.symbolCode.push(weatherReport.symbolCode);
+        }
+        return accumulatedGroupedObjects;
+    }, []);
+};
+// TEST:
+// const filteredArray = weatherArray.filter((weatherReport) => {
+//   const reportDate = new Date(weatherReport.time);
+//   console.log(reportDate)
+//   return reportDate > currentDate && reportDate <= sixDaysFromToday;
+// });
+// console.log(filteredArray)
+//   filteredArray.forEach((report) => {
+//     const localReportTime = new Date(report.time).toLocaleString("sv-SE", {
+//       year: "numeric",
+//       month: "2-digit",
+//       day: "2-digit",
+//       hour: "2-digit",
+//       minute: "2-digit",
+//     });
+//     console.log(`Date: ${localReportTime}, Temp: ${report.temperature}, Weather: ${report.symbolMeaning}`)
+//   });
 const insertWeatherData = (place, municipality, county) => {
     var _a, _b, _c;
+    const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
     // reset element before filling it
     weatherText.innerHTML = "";
     // if missing location or weather data
@@ -111,6 +174,7 @@ const insertWeatherData = (place, municipality, county) => {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
+    // insert data. Index 0 is always the current weather report in the weatherArray
     // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
     weatherIconBox.innerHTML += `
   <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
@@ -119,12 +183,7 @@ const insertWeatherData = (place, municipality, county) => {
     <h1>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.temperature}</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
-    <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false
-    })}
-    </p>
+    <p>Time: ${currentLocalTime}</p>
     <p>${(_c = weatherArray[0]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
   `;
 };
@@ -160,7 +219,7 @@ const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     // create dynamic fetch url inside fetch function to get updated values for lon & lat
-    const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=48&parameters=air_temperature,symbol_code`;
+    const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
     try {
         const response = yield fetch(filteredWeatherUrl);
         if (!response.ok) {
@@ -175,13 +234,19 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
             const symbolMeaning = mapSymbolCode(symbolCode);
             const localTime = new Date(report.time).toLocaleString("sv-SE", {
                 timeZone: "Europe/Stockholm",
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
+                // year: "numeric",
+                // month: "2-digit",
+                // day: "2-digit",
                 hour: "2-digit",
                 minute: "2-digit"
             });
-            const dayNumber = (new Date(localTime)).getDay();
+            const localDate = new Date(report.time).toLocaleString("sv-SE", {
+                timeZone: "Europe/Stockholm",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit"
+            });
+            const dayNumber = (new Date(localDate)).getDay();
             let dayOfWeek = "";
             const getDayOfWeekName = (dayNumber) => {
                 if (dayNumber === 0) {
@@ -210,6 +275,7 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
             getDayOfWeekName(dayNumber);
             weatherData = {
                 time: localTime,
+                date: localDate,
                 dayOfWeek: dayOfWeek,
                 temperature: `${report.data.air_temperature}°C`,
                 symbolCode: symbolCode,

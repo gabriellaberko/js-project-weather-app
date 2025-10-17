@@ -32,6 +32,7 @@ interface fetchedGeoDataFormat {
 }
 interface WeatherDataFormat {
     time: string;
+    date: string;
     dayOfWeek: string;
     temperature: string;
     symbolCode: number;
@@ -47,11 +48,19 @@ interface GeoDataFormat {
     lat: number;
     lon: number;
 }
+interface GroupedWeatherDataFormat {
+    date: string;
+    dayOfWeek: string;
+    temperature: string[];
+    symbolCode: number[];
+}
 declare let weatherData: WeatherDataFormat;
 declare const weatherArray: WeatherDataFormat[];
 declare let geoData: GeoDataFormat;
 declare const geoArray: GeoDataFormat[];
+declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];
 declare const getLocationAndCoordinates: (index: number) => Promise<void>;
+declare const getWeeklyDetails: () => void;
 declare const insertWeatherData: (place: string, municipality: string, county: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
 declare const fetchGeoData: () => Promise<void>;

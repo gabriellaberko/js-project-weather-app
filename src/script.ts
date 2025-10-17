@@ -95,6 +95,7 @@ interface fetchedGeoDataFormat {
 
 interface WeatherDataFormat {
   time: string;
+  date: string;
   dayOfWeek: string;
   temperature: string;
   symbolCode: number;
@@ -112,6 +113,15 @@ interface GeoDataFormat {
   lon: number;
 };
 
+
+interface GroupedWeatherDataFormat {
+  date: string;
+  dayOfWeek: string;
+  temperature: string[];
+  symbolCode: number[];
+};
+
+
 // interface GeoWeatherDataFormat extends WeatherDataFormat {
 //   country: string;
 //   place: string;
@@ -127,6 +137,8 @@ const weatherArray: WeatherDataFormat[] = [];
 let geoData: GeoDataFormat;
 
 const geoArray: GeoDataFormat[] = []
+
+let weatherArrayGroupedByDate: GroupedWeatherDataFormat[] = [];
 
 
 
@@ -151,12 +163,84 @@ const getLocationAndCoordinates = async (index: number) => {
 
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling insertWeatherData
+  getWeeklyDetails();
   insertWeatherData(municipality, county, place);
 };
 
 
+const getWeeklyDetails = () => {
+
+  // // get the date 6 days from today in local time
+  // const currentDate = new Date();
+  // const currentLocalDate = currentDate.toLocaleString("sv-SE", {
+  //   // timeZone: "Europe/Stockholm",
+  //   year: "numeric",
+  //   month: "2-digit",
+  //   day: "2-digit",
+  // });
+  // const sixDaysFromToday = new Date(currentDate);
+  // sixDaysFromToday.setDate(currentDate.getDate()+6);
+  // const localSixDaysFromToday = sixDaysFromToday.toLocaleString("sv-SE", {
+  //   // timeZone: "Europe/Stockholm",
+  //   year: "numeric",
+  //   month: "2-digit",
+  //   day: "2-digit",
+  // });
+      // if(!(weatherReport.date <= sixDaysFromToday)){
+    //   return;
+    // }
+
+  weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects: GroupedWeatherDataFormat[], weatherReport: WeatherDataFormat) => {
+
+    let existingGroupedObject = accumulatedGroupedObjects.find(groupedObject => groupedObject.date === weatherReport.date);
+
+    // create a new grouped object for the date
+    if(!existingGroupedObject) {
+      accumulatedGroupedObjects.push({
+        date: weatherReport.date,
+        dayOfWeek: weatherReport.dayOfWeek,
+        temperature: [weatherReport.temperature],
+        symbolCode: [weatherReport.symbolCode]
+      });
+    } else {
+      existingGroupedObject.temperature.push(weatherReport.temperature);
+      existingGroupedObject.symbolCode.push(weatherReport.symbolCode);
+    }
+
+    return accumulatedGroupedObjects;
+  }, []
+  )};
+
+
+// TEST:
+  // const filteredArray = weatherArray.filter((weatherReport) => {
+  //   const reportDate = new Date(weatherReport.time);
+  //   console.log(reportDate)
+  //   return reportDate > currentDate && reportDate <= sixDaysFromToday;
+  // });
+  // console.log(filteredArray)
+
+  //   filteredArray.forEach((report) => {
+  //     const localReportTime = new Date(report.time).toLocaleString("sv-SE", {
+  //       year: "numeric",
+  //       month: "2-digit",
+  //       day: "2-digit",
+  //       hour: "2-digit",
+  //       minute: "2-digit",
+  //     });
+  //     console.log(`Date: ${localReportTime}, Temp: ${report.temperature}, Weather: ${report.symbolMeaning}`)
+  //   });
+
+
+
 
 const insertWeatherData = (place: string, municipality: string, county: string) => {
+
+  const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
 
   // reset element before filling it
   weatherText.innerHTML = "";
@@ -168,6 +252,8 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
     return;
   }
 
+  // insert data. Index 0 is always the current weather report in the weatherArray
+
   // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
   weatherIconBox.innerHTML += `
   <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[0]?.symbolCode}.svg" alt="weather icon">  
@@ -177,12 +263,7 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
     <h1>${weatherArray[0]?.temperature}</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
-    <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false
-  })}
-    </p>
+    <p>Time: ${currentLocalTime}</p>
     <p>${weatherArray[0]?.symbolMeaning}</p>
   `
 };
@@ -233,7 +314,7 @@ const fetchGeoData = async () => {
 const fetchWeatherData = async () => {
 
   // create dynamic fetch url inside fetch function to get updated values for lon & lat
-  const filteredWeatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=48&parameters=air_temperature,symbol_code`;
+  const filteredWeatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
 
   try {
     const response = await fetch(filteredWeatherUrl);
@@ -255,14 +336,20 @@ const fetchWeatherData = async () => {
       const symbolMeaning = mapSymbolCode(symbolCode);
       const localTime = new Date(report.time).toLocaleString("sv-SE", {
         timeZone: "Europe/Stockholm",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
+        // year: "numeric",
+        // month: "2-digit",
+        // day: "2-digit",
         hour: "2-digit",
         minute: "2-digit"
       });
+      const localDate = new Date(report.time).toLocaleString("sv-SE", {
+        timeZone: "Europe/Stockholm",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      });
 
-      const dayNumber: number = (new Date(localTime)).getDay();
+      const dayNumber: number = (new Date(localDate)).getDay();
       let dayOfWeek: string = "";
 
       const getDayOfWeekName = (dayNumber: number) => {
@@ -288,6 +375,7 @@ const fetchWeatherData = async () => {
 
       weatherData = {
         time: localTime,
+        date: localDate,
         dayOfWeek: dayOfWeek,
         temperature: `${report.data.air_temperature}°C`,
         symbolCode: symbolCode,
