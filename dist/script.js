@@ -153,7 +153,7 @@ const insertWeatherData = (place, municipality, county) => {
   <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
   `;
     weatherText.innerHTML += `
-    <h1>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.temperature}</h1>
+    <h1>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
@@ -289,7 +289,7 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
                 time: localTime,
                 date: localDate,
                 dayOfWeek: dayOfWeek,
-                temperature: report.data.air_temperature,
+                temperature: Math.round(report.data.air_temperature),
                 symbolCode: symbolCode,
                 symbolMeaning: symbolMeaning,
                 lon: lon,

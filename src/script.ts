@@ -230,7 +230,7 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
   `
 
   weatherText.innerHTML += `
-    <h1>${weatherArray[0]?.temperature}</h1>
+    <h1>${weatherArray[0]?.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
@@ -386,7 +386,7 @@ const fetchWeatherData = async () => {
         time: localTime,
         date: localDate,
         dayOfWeek: dayOfWeek,
-        temperature: report.data.air_temperature,
+        temperature: Math.round(report.data.air_temperature),
         symbolCode: symbolCode,
         symbolMeaning: symbolMeaning,
         lon: lon,
