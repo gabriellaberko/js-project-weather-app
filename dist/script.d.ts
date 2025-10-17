@@ -1,4 +1,5 @@
 declare const weatherText: HTMLElement;
+declare const weatherIconBox: HTMLElement;
 declare const weatherUrl: string;
 declare const geoUrl: string;
 declare let lon: number;
@@ -7,7 +8,7 @@ declare const weatherSymbols: {
     id: number;
     description: string;
 }[];
-declare const places: GeoDataFormat[];
+declare const locations: GeoDataFormat[];
 interface fetchedWeatherDataFormat {
     time: string;
     intervalParametersStartTime: string;
@@ -32,29 +33,25 @@ interface fetchedGeoDataFormat {
 interface WeatherDataFormat {
     time: string;
     temperature: string;
-    symbolNumber: number;
+    symbolCode: number;
     symbolMeaning: string;
     lat: number;
     lon: number;
 }
 interface GeoDataFormat {
     country: string;
+    place: string;
     county: string;
-    municipality?: string;
+    municipality: string;
     lat: number;
     lon: number;
 }
-interface GeoWeatherDataFormat extends WeatherDataFormat {
-    country: string;
-    county: string;
-    municipality?: string;
-}
 declare let weatherData: WeatherDataFormat;
-declare let geoData: GeoDataFormat;
 declare const weatherArray: WeatherDataFormat[];
+declare let geoData: GeoDataFormat;
 declare const geoArray: GeoDataFormat[];
 declare const getLocationAndCoordinates: (index: number) => Promise<void>;
-declare const insertWeatherData: (municipality: string, county: string) => void;
+declare const insertWeatherData: (place: string, municipality: string, county: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
 declare const fetchGeoData: () => Promise<void>;
 declare const fetchWeatherData: () => Promise<void>;

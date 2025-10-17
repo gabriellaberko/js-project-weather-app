@@ -1,13 +1,13 @@
 /*------ DOM elements --------*/
 
 const weatherText: HTMLElement = document.getElementById("weather-text");
-
+const weatherIconBox: HTMLElement = document.getElementById("weather-icon-box");
 
 
 /*------ Global variables --------*/
 const weatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 
-const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
+const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
 
 let lon: number = 18.062639; // Stockholm
 let lat: number = 59.329468; // Stockholm
@@ -43,9 +43,10 @@ const weatherSymbols = [
 ];
 
 
-const places: GeoDataFormat[] = [
+const locations: GeoDataFormat[] = [
   {
     country: "Sverige",
+    place: "Stockholm",
     county: "Stockholms län",
     municipality: "Stockholm",
     lon: 18.062639,
@@ -53,6 +54,7 @@ const places: GeoDataFormat[] = [
   },
   {
     country: "Sverige",
+    place: "Göteborg",
     county: "Västra Götalands län",
     municipality: "Göteborg",
     lon: 11.966666,
@@ -60,6 +62,7 @@ const places: GeoDataFormat[] = [
   },
   {
     country: "Sverige",
+    place: "Umeå",
     county: "Västerbottens län",
     municipality: "Umeå",
     lon: 20.25,
@@ -87,12 +90,13 @@ interface fetchedGeoDataFormat {
   place: string;
   population: number;
   timezone: string;
-  type: string[]}[];
+  type: string[]
+}[];
 
 interface WeatherDataFormat {
   time: string;
   temperature: string;
-  symbolNumber: number;
+  symbolCode: number;
   symbolMeaning: string;
   lat: number;
   lon: number;
@@ -100,73 +104,82 @@ interface WeatherDataFormat {
 
 interface GeoDataFormat {
   country: string;
+  place: string;
   county: string;
-  municipality?: string;
+  municipality: string;
   lat: number;
   lon: number;
 };
 
-interface GeoWeatherDataFormat extends WeatherDataFormat {
-  country: string;
-  county: string;
-  municipality?: string;
-};
+// interface GeoWeatherDataFormat extends WeatherDataFormat {
+//   country: string;
+//   place: string;
+//   county: string;
+//   municipality?: string;
+// };
+
 
 let weatherData: WeatherDataFormat;
 
-let geoData: GeoDataFormat;
-
 const weatherArray: WeatherDataFormat[] = [];
+
+let geoData: GeoDataFormat;
 
 const geoArray: GeoDataFormat[] = []
 
 
 
-// TO DO: create a function that loops through the length of the variable places and returning an index - called upon click on arrow button
+// TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
 
 
 const getLocationAndCoordinates = async (index: number) => {
-  if (!places || places.length === 0){
+  if (!locations || locations.length === 0) {
     weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
     return;
   }
 
-  const place: GeoDataFormat = places[index];
+  const location: GeoDataFormat = locations[index];
 
-  lon = place.lon;
-  lat = place.lat;
+  lon = location.lon;
+  lat = location.lat;
 
   //Fallback for municipality and county
-  const municipality = place.municipality || "Missing value";
-  const county = place.county || "Missing value";
+  const municipality = location.municipality || "Missing value";
+  const county = location.county || "Missing value";
+  const place = location.place || "Missing value";
 
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling insertWeatherData
-  insertWeatherData(municipality, county);
+  insertWeatherData(municipality, county, place);
 };
 
 
 
-const insertWeatherData = (municipality: string, county: string) => {
+const insertWeatherData = (place: string, municipality: string, county: string) => {
 
   // reset element before filling it
   weatherText.innerHTML = "";
-  
+
 
   // if missing location or weather data
-  if((!places || places.length === 0) || (!weatherArray || weatherArray.length === 0) ) {
+  if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
     weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
     return;
   }
 
+  weatherIconBox.innerHTML += `
+  <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[0]?.symbolCode}.svg" alt="weather icon">  
+  `
+
   weatherText.innerHTML += `
     <h1>${weatherArray[0]?.temperature}</h1>
-    <h2>${municipality}, <br> ${county}</h2>
+    <h2>${place}</h2>
+    <h3>${municipality}, ${county}</h3>
     <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    })}
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  })}
     </p>
     <p>${weatherArray[0]?.symbolMeaning}</p>
   `
@@ -178,9 +191,9 @@ const mapSymbolCode = (symbolCode: number) => {
   // find the object in weatherSymbols that matches the symbol code
   const rightWeatherObj = weatherSymbols.find(weatherSymbol => weatherSymbol.id ===
     symbolCode)
-  
+
   // return the description of that object
-  return(rightWeatherObj ? rightWeatherObj.description : "");
+  return (rightWeatherObj ? rightWeatherObj.description : "");
 };
 
 
@@ -189,13 +202,13 @@ const fetchGeoData = async () => {
   try {
     const response = await fetch(geoUrl);
 
-    if(!response.ok) {
+    if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const fetchedGeoReports:fetchedGeoDataFormat[] = await response.json();
+    const fetchedGeoReports: fetchedGeoDataFormat[] = await response.json();
 
-    fetchedGeoReports.map((report:fetchedGeoDataFormat) => {
+    fetchedGeoReports.map((report: fetchedGeoDataFormat) => {
 
       geoData = {
         country: report.country,
@@ -204,12 +217,12 @@ const fetchGeoData = async () => {
         lat: Number((report.lat).toFixed(6)),
         lon: Number((report.lon).toFixed(6))
       };
-    
+
       geoArray.push(geoData);
     });
 
   }
-  catch(error) {
+  catch (error) {
     console.error('Fetch error:', error);
   }
 };
@@ -223,7 +236,7 @@ const fetchWeatherData = async () => {
   try {
     const response = await fetch(filteredWeatherUrl);
 
-    if(!response.ok) {
+    if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json()
@@ -232,10 +245,10 @@ const fetchWeatherData = async () => {
     const lon: number = Number((data.geometry.coordinates[0]).toFixed(6));
     const lat: number = Number((data.geometry.coordinates[1]).toFixed(6));
 
-    const fetchedWeatherReports:fetchedWeatherDataFormat[] = data.timeSeries;
+    const fetchedWeatherReports: fetchedWeatherDataFormat[] = data.timeSeries;
 
-    fetchedWeatherReports.map((report:fetchedWeatherDataFormat) => {
- 
+    fetchedWeatherReports.map((report: fetchedWeatherDataFormat) => {
+
       const symbolCode = report.data.symbol_code;
       const symbolMeaning = mapSymbolCode(symbolCode);
       const localTime = new Date(report.time).toLocaleString("sv-SE", {
@@ -248,19 +261,19 @@ const fetchWeatherData = async () => {
       });
 
       weatherData = {
-        time: localTime, 
+        time: localTime,
         temperature: `${report.data.air_temperature}°C`,
-        symbolNumber: report.data.symbol_code,
+        symbolCode: symbolCode,
         symbolMeaning: symbolMeaning,
         lon: lon,
         lat: lat
       };
-    
-    weatherArray.push(weatherData);
+
+      weatherArray.push(weatherData);
     });
 
   }
-  catch(error) {
+  catch (error) {
     console.error('Fetch error:', error);
   }
 };

@@ -10,9 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const weatherText = document.getElementById("weather-text");
+const weatherIconBox = document.getElementById("weather-icon-box");
 /*------ Global variables --------*/
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?pmponly=true`;
+const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
 let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
 const weatherSymbols = [
@@ -44,9 +45,10 @@ const weatherSymbols = [
     { id: 26, description: "Moderate snowfall" },
     { id: 27, description: "Heavy snowfall" }
 ];
-const places = [
+const locations = [
     {
         country: "Sverige",
+        place: "Stockholm",
         county: "Stockholms län",
         municipality: "Stockholm",
         lon: 18.062639,
@@ -54,6 +56,7 @@ const places = [
     },
     {
         country: "Sverige",
+        place: "Göteborg",
         county: "Västra Götalands län",
         municipality: "Göteborg",
         lon: 11.966666,
@@ -61,6 +64,7 @@ const places = [
     },
     {
         country: "Sverige",
+        place: "Umeå",
         county: "Västerbottens län",
         municipality: "Umeå",
         lon: 20.25,
@@ -71,46 +75,56 @@ const places = [
 [];
 ;
 ;
-;
+// interface GeoWeatherDataFormat extends WeatherDataFormat {
+//   country: string;
+//   place: string;
+//   county: string;
+//   municipality?: string;
+// };
 let weatherData;
-let geoData;
 const weatherArray = [];
+let geoData;
 const geoArray = [];
-// TO DO: create a function that loops through the length of the variable places and returning an index - called upon click on arrow button
+// TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
 const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!places || places.length === 0) {
+    if (!locations || locations.length === 0) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
-    const place = places[index];
-    lon = place.lon;
-    lat = place.lat;
+    const location = locations[index];
+    lon = location.lon;
+    lat = location.lat;
     //Fallback for municipality and county
-    const municipality = place.municipality || "Missing value";
-    const county = place.county || "Missing value";
+    const municipality = location.municipality || "Missing value";
+    const county = location.county || "Missing value";
+    const place = location.place || "Missing value";
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling insertWeatherData
-    insertWeatherData(municipality, county);
+    insertWeatherData(municipality, county, place);
 });
-const insertWeatherData = (municipality, county) => {
-    var _a, _b;
+const insertWeatherData = (place, municipality, county) => {
+    var _a, _b, _c;
     // reset element before filling it
     weatherText.innerHTML = "";
     // if missing location or weather data
-    if ((!places || places.length === 0) || (!weatherArray || weatherArray.length === 0)) {
+    if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
+    weatherIconBox.innerHTML += `
+  <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
+  `;
     weatherText.innerHTML += `
-    <h1>${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.temperature}</h1>
-    <h2>${municipality}, <br> ${county}</h2>
+    <h1>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.temperature}</h1>
+    <h2>${place}</h2>
+    <h3>${municipality}, ${county}</h3>
     <p>Time: ${new Date().toLocaleTimeString("sv-SE", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false
     })}
     </p>
-    <p>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.symbolMeaning}</p>
+    <p>${(_c = weatherArray[0]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
   `;
 };
 const mapSymbolCode = (symbolCode) => {
@@ -169,7 +183,7 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
             weatherData = {
                 time: localTime,
                 temperature: `${report.data.air_temperature}°C`,
-                symbolNumber: report.data.symbol_code,
+                symbolCode: symbolCode,
                 symbolMeaning: symbolMeaning,
                 lon: lon,
                 lat: lat
