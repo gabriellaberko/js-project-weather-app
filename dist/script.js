@@ -1,5 +1,5 @@
 "use strict";
-/*------ DOM elements --------*/
+/*------ Interfaces --------*/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,14 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+[];
+[];
+;
+;
+;
+/*------ DOM elements --------*/
 const weatherText = document.getElementById("weather-text");
 const weatherIconBox = document.getElementById("weather-icon-box");
 const weeklyDetails = document.getElementById("weekly-details");
 /*------ Global variables --------*/
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
-let lon = 18.062639; // Stockholm
-let lat = 59.329468; // Stockholm
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
     { id: 2, description: "Nearly clear sky" },
@@ -72,22 +76,14 @@ const locations = [
         lat: 63.833333
     }
 ];
-[];
-[];
-;
-;
-;
-// interface GeoWeatherDataFormat extends WeatherDataFormat {
-//   country: string;
-//   place: string;
-//   county: string;
-//   municipality?: string;
-// };
+let lon = 18.062639; // Stockholm
+let lat = 59.329468; // Stockholm
 let weatherData;
 const weatherArray = [];
 let geoData;
 const geoArray = [];
 let weatherArrayGroupedByDate = [];
+/*------ Logic --------*/
 // TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
 const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, function* () {
     if (!locations || locations.length === 0) {
@@ -228,6 +224,7 @@ const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error('Fetch error:', error);
     }
 });
+/*------ Fetch data --------*/
 const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     // create dynamic fetch url inside fetch function to get updated values for lon & lat
     const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
@@ -302,6 +299,7 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error('Fetch error:', error);
     }
 });
+/*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
     //fetchGeoData();
     getLocationAndCoordinates(0);

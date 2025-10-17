@@ -1,15 +1,3 @@
-declare const weatherText: HTMLElement;
-declare const weatherIconBox: HTMLElement;
-declare const weeklyDetails: HTMLElement;
-declare const weatherUrl: string;
-declare const geoUrl: string;
-declare let lon: number;
-declare let lat: number;
-declare const weatherSymbols: {
-    id: number;
-    description: string;
-}[];
-declare const locations: GeoDataFormat[];
 interface fetchedWeatherDataFormat {
     time: string;
     intervalParametersStartTime: string;
@@ -55,6 +43,18 @@ interface GroupedWeatherDataFormat {
     temperature: number[];
     symbolCode: number[];
 }
+declare const weatherText: HTMLElement;
+declare const weatherIconBox: HTMLElement;
+declare const weeklyDetails: HTMLElement;
+declare const weatherUrl: string;
+declare const geoUrl: string;
+declare const weatherSymbols: {
+    id: number;
+    description: string;
+}[];
+declare const locations: GeoDataFormat[];
+declare let lon: number;
+declare let lat: number;
 declare let weatherData: WeatherDataFormat;
 declare const weatherArray: WeatherDataFormat[];
 declare let geoData: GeoDataFormat;

@@ -1,3 +1,56 @@
+/*------ Interfaces --------*/
+
+interface fetchedWeatherDataFormat {
+  time: string;
+  intervalParametersStartTime: string;
+  data: { air_temperature: number; symbol_code: number };
+}[];
+
+interface fetchedGeoDataFormat {
+  country: string;
+  county: string;
+  district: string;
+  geonameid: number;
+  lon: number;
+  lat: number;
+  municipality?: string;
+  place: string;
+  population: number;
+  timezone: string;
+  type: string[]
+}[];
+
+interface WeatherDataFormat {
+  time: string;
+  date: string;
+  dayOfWeek: string;
+  temperature: number;
+  symbolCode: number;
+  symbolMeaning: string;
+  lat: number;
+  lon: number;
+};
+
+interface GeoDataFormat {
+  country: string;
+  place: string;
+  county: string;
+  municipality: string;
+  lat: number;
+  lon: number;
+};
+
+
+interface GroupedWeatherDataFormat {
+  date: string;
+  dayOfWeek: string;
+  temperature: number[];
+  symbolCode: number[];
+};
+
+
+
+
 /*------ DOM elements --------*/
 
 const weatherText: HTMLElement = document.getElementById("weather-text");
@@ -6,13 +59,12 @@ const weeklyDetails: HTMLElement = document.getElementById("weekly-details");
 
 
 
+
 /*------ Global variables --------*/
 const weatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 
 const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
 
-let lon: number = 18.062639; // Stockholm
-let lat: number = 59.329468; // Stockholm
 
 const weatherSymbols = [
   { id: 1, description: "Clear sky" },
@@ -72,64 +124,8 @@ const locations: GeoDataFormat[] = [
   }
 ];
 
-
-/*------ Assign data types --------*/
-
-interface fetchedWeatherDataFormat {
-  time: string;
-  intervalParametersStartTime: string;
-  data: { air_temperature: number; symbol_code: number };
-}[];
-
-interface fetchedGeoDataFormat {
-  country: string;
-  county: string;
-  district: string;
-  geonameid: number;
-  lon: number;
-  lat: number;
-  municipality?: string;
-  place: string;
-  population: number;
-  timezone: string;
-  type: string[]
-}[];
-
-interface WeatherDataFormat {
-  time: string;
-  date: string;
-  dayOfWeek: string;
-  temperature: number;
-  symbolCode: number;
-  symbolMeaning: string;
-  lat: number;
-  lon: number;
-};
-
-interface GeoDataFormat {
-  country: string;
-  place: string;
-  county: string;
-  municipality: string;
-  lat: number;
-  lon: number;
-};
-
-
-interface GroupedWeatherDataFormat {
-  date: string;
-  dayOfWeek: string;
-  temperature: number[];
-  symbolCode: number[];
-};
-
-
-// interface GeoWeatherDataFormat extends WeatherDataFormat {
-//   country: string;
-//   place: string;
-//   county: string;
-//   municipality?: string;
-// };
+let lon: number = 18.062639; // Stockholm
+let lat: number = 59.329468; // Stockholm
 
 
 let weatherData: WeatherDataFormat;
@@ -143,6 +139,8 @@ const geoArray: GeoDataFormat[] = []
 let weatherArrayGroupedByDate: GroupedWeatherDataFormat[] = [];
 
 
+
+/*------ Logic --------*/
 
 // TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
 
@@ -319,6 +317,11 @@ const fetchGeoData = async () => {
 };
 
 
+
+
+/*------ Fetch data --------*/
+
+
 const fetchWeatherData = async () => {
 
   // create dynamic fetch url inside fetch function to get updated values for lon & lat
@@ -402,6 +405,9 @@ const fetchWeatherData = async () => {
   }
 };
 
+
+
+/*------ Event listeners --------*/
 
 
 document.addEventListener("DOMContentLoaded", () => {
