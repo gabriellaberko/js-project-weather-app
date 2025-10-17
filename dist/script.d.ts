@@ -1,5 +1,6 @@
 declare const weatherText: HTMLElement;
 declare const weatherIconBox: HTMLElement;
+declare const weeklyDetails: HTMLElement;
 declare const weatherUrl: string;
 declare const geoUrl: string;
 declare let lon: number;
@@ -34,7 +35,7 @@ interface WeatherDataFormat {
     time: string;
     date: string;
     dayOfWeek: string;
-    temperature: string;
+    temperature: number;
     symbolCode: number;
     symbolMeaning: string;
     lat: number;
@@ -51,7 +52,7 @@ interface GeoDataFormat {
 interface GroupedWeatherDataFormat {
     date: string;
     dayOfWeek: string;
-    temperature: string[];
+    temperature: number[];
     symbolCode: number[];
 }
 declare let weatherData: WeatherDataFormat;
@@ -61,6 +62,7 @@ declare const geoArray: GeoDataFormat[];
 declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];
 declare const getLocationAndCoordinates: (index: number) => Promise<void>;
 declare const getWeeklyDetails: () => void;
+declare const getTempMinMax: (index: number) => string;
 declare const insertWeatherData: (place: string, municipality: string, county: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
 declare const fetchGeoData: () => Promise<void>;

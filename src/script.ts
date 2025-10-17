@@ -2,6 +2,8 @@
 
 const weatherText: HTMLElement = document.getElementById("weather-text");
 const weatherIconBox: HTMLElement = document.getElementById("weather-icon-box");
+const weeklyDetails: HTMLElement = document.getElementById("weekly-details");
+
 
 
 /*------ Global variables --------*/
@@ -97,7 +99,7 @@ interface WeatherDataFormat {
   time: string;
   date: string;
   dayOfWeek: string;
-  temperature: string;
+  temperature: number;
   symbolCode: number;
   symbolMeaning: string;
   lat: number;
@@ -117,7 +119,7 @@ interface GeoDataFormat {
 interface GroupedWeatherDataFormat {
   date: string;
   dayOfWeek: string;
-  temperature: string[];
+  temperature: number[];
   symbolCode: number[];
 };
 
@@ -170,26 +172,6 @@ const getLocationAndCoordinates = async (index: number) => {
 
 const getWeeklyDetails = () => {
 
-  // // get the date 6 days from today in local time
-  // const currentDate = new Date();
-  // const currentLocalDate = currentDate.toLocaleString("sv-SE", {
-  //   // timeZone: "Europe/Stockholm",
-  //   year: "numeric",
-  //   month: "2-digit",
-  //   day: "2-digit",
-  // });
-  // const sixDaysFromToday = new Date(currentDate);
-  // sixDaysFromToday.setDate(currentDate.getDate()+6);
-  // const localSixDaysFromToday = sixDaysFromToday.toLocaleString("sv-SE", {
-  //   // timeZone: "Europe/Stockholm",
-  //   year: "numeric",
-  //   month: "2-digit",
-  //   day: "2-digit",
-  // });
-      // if(!(weatherReport.date <= sixDaysFromToday)){
-    //   return;
-    // }
-
   weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects: GroupedWeatherDataFormat[], weatherReport: WeatherDataFormat) => {
 
     let existingGroupedObject = accumulatedGroupedObjects.find(groupedObject => groupedObject.date === weatherReport.date);
@@ -211,26 +193,14 @@ const getWeeklyDetails = () => {
   }, []
   )};
 
+  const getTempMinMax = (index: number) => {
+    const tempArray = weatherArrayGroupedByDate[index]?.temperature
+    const minTemp = Math.min(...tempArray);
+    const maxTemp = Math.max(...tempArray);
+    const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
 
-// TEST:
-  // const filteredArray = weatherArray.filter((weatherReport) => {
-  //   const reportDate = new Date(weatherReport.time);
-  //   console.log(reportDate)
-  //   return reportDate > currentDate && reportDate <= sixDaysFromToday;
-  // });
-  // console.log(filteredArray)
-
-  //   filteredArray.forEach((report) => {
-  //     const localReportTime = new Date(report.time).toLocaleString("sv-SE", {
-  //       year: "numeric",
-  //       month: "2-digit",
-  //       day: "2-digit",
-  //       hour: "2-digit",
-  //       minute: "2-digit",
-  //     });
-  //     console.log(`Date: ${localReportTime}, Temp: ${report.temperature}, Weather: ${report.symbolMeaning}`)
-  //   });
-
+    return minMaxTemp;
+  }
 
 
 
@@ -265,6 +235,44 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
     <p>${weatherArray[0]?.symbolMeaning}</p>
+  `
+  // tomorrow has index 1
+  weeklyDetails.innerHTML += `
+    <div class="day-box">
+      <p class="day">${weatherArrayGroupedByDate[1]?.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArrayGroupedByDate[1]?.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(1)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${weatherArrayGroupedByDate[2]?.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArrayGroupedByDate[2]?.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(2)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${weatherArrayGroupedByDate[3]?.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArrayGroupedByDate[3]?.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(3)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${weatherArrayGroupedByDate[4]?.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArrayGroupedByDate[4]?.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(4)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${weatherArrayGroupedByDate[5]?.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArrayGroupedByDate[5]?.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(5)}</p>
+      </div>
+    </div>
   `
 };
 
@@ -373,11 +381,12 @@ const fetchWeatherData = async () => {
 
       getDayOfWeekName(dayNumber);
 
+      // TO DO: round temperature to whole number
       weatherData = {
         time: localTime,
         date: localDate,
         dayOfWeek: dayOfWeek,
-        temperature: `${report.data.air_temperature}°C`,
+        temperature: report.data.air_temperature,
         symbolCode: symbolCode,
         symbolMeaning: symbolMeaning,
         lon: lon,

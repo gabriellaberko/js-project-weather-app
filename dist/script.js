@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const weatherText = document.getElementById("weather-text");
 const weatherIconBox = document.getElementById("weather-icon-box");
+const weeklyDetails = document.getElementById("weekly-details");
 /*------ Global variables --------*/
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
@@ -106,25 +107,6 @@ const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, f
     insertWeatherData(municipality, county, place);
 });
 const getWeeklyDetails = () => {
-    // // get the date 6 days from today in local time
-    // const currentDate = new Date();
-    // const currentLocalDate = currentDate.toLocaleString("sv-SE", {
-    //   // timeZone: "Europe/Stockholm",
-    //   year: "numeric",
-    //   month: "2-digit",
-    //   day: "2-digit",
-    // });
-    // const sixDaysFromToday = new Date(currentDate);
-    // sixDaysFromToday.setDate(currentDate.getDate()+6);
-    // const localSixDaysFromToday = sixDaysFromToday.toLocaleString("sv-SE", {
-    //   // timeZone: "Europe/Stockholm",
-    //   year: "numeric",
-    //   month: "2-digit",
-    //   day: "2-digit",
-    // });
-    // if(!(weatherReport.date <= sixDaysFromToday)){
-    //   return;
-    // }
     weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects, weatherReport) => {
         let existingGroupedObject = accumulatedGroupedObjects.find(groupedObject => groupedObject.date === weatherReport.date);
         // create a new grouped object for the date
@@ -143,25 +125,16 @@ const getWeeklyDetails = () => {
         return accumulatedGroupedObjects;
     }, []);
 };
-// TEST:
-// const filteredArray = weatherArray.filter((weatherReport) => {
-//   const reportDate = new Date(weatherReport.time);
-//   console.log(reportDate)
-//   return reportDate > currentDate && reportDate <= sixDaysFromToday;
-// });
-// console.log(filteredArray)
-//   filteredArray.forEach((report) => {
-//     const localReportTime = new Date(report.time).toLocaleString("sv-SE", {
-//       year: "numeric",
-//       month: "2-digit",
-//       day: "2-digit",
-//       hour: "2-digit",
-//       minute: "2-digit",
-//     });
-//     console.log(`Date: ${localReportTime}, Temp: ${report.temperature}, Weather: ${report.symbolMeaning}`)
-//   });
+const getTempMinMax = (index) => {
+    var _a;
+    const tempArray = (_a = weatherArrayGroupedByDate[index]) === null || _a === void 0 ? void 0 : _a.temperature;
+    const minTemp = Math.min(...tempArray);
+    const maxTemp = Math.max(...tempArray);
+    const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
+    return minMaxTemp;
+};
 const insertWeatherData = (place, municipality, county) => {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
         hour: "2-digit",
         minute: "2-digit",
@@ -185,6 +158,44 @@ const insertWeatherData = (place, municipality, county) => {
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
     <p>${(_c = weatherArray[0]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
+  `;
+    // tomorrow has index 1
+    weeklyDetails.innerHTML += `
+    <div class="day-box">
+      <p class="day">${(_d = weatherArrayGroupedByDate[1]) === null || _d === void 0 ? void 0 : _d.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_e = weatherArrayGroupedByDate[1]) === null || _e === void 0 ? void 0 : _e.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(1)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${(_f = weatherArrayGroupedByDate[2]) === null || _f === void 0 ? void 0 : _f.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_g = weatherArrayGroupedByDate[2]) === null || _g === void 0 ? void 0 : _g.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(2)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${(_h = weatherArrayGroupedByDate[3]) === null || _h === void 0 ? void 0 : _h.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_j = weatherArrayGroupedByDate[3]) === null || _j === void 0 ? void 0 : _j.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(3)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${(_k = weatherArrayGroupedByDate[4]) === null || _k === void 0 ? void 0 : _k.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_l = weatherArrayGroupedByDate[4]) === null || _l === void 0 ? void 0 : _l.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(4)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${(_m = weatherArrayGroupedByDate[5]) === null || _m === void 0 ? void 0 : _m.dayOfWeek}</p>
+      <div class="details">
+        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_o = weatherArrayGroupedByDate[5]) === null || _o === void 0 ? void 0 : _o.symbolCode[2]}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(5)}</p>
+      </div>
+    </div>
   `;
 };
 const mapSymbolCode = (symbolCode) => {
@@ -273,11 +284,12 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
                 return dayOfWeek;
             };
             getDayOfWeekName(dayNumber);
+            // TO DO: round temperature to whole number
             weatherData = {
                 time: localTime,
                 date: localDate,
                 dayOfWeek: dayOfWeek,
-                temperature: `${report.data.air_temperature}°C`,
+                temperature: report.data.air_temperature,
                 symbolCode: symbolCode,
                 symbolMeaning: symbolMeaning,
                 lon: lon,
