@@ -111,6 +111,7 @@ const insertWeatherData = (place, municipality, county) => {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
+    // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
     weatherIconBox.innerHTML += `
   <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
   `;
@@ -180,8 +181,36 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
                 hour: "2-digit",
                 minute: "2-digit"
             });
+            const dayNumber = (new Date(localTime)).getDay();
+            let dayOfWeek = "";
+            const getDayOfWeekName = (dayNumber) => {
+                if (dayNumber === 0) {
+                    dayOfWeek = "Sun";
+                }
+                else if (dayNumber === 1) {
+                    dayOfWeek = "Mon";
+                }
+                else if (dayNumber === 2) {
+                    dayOfWeek = "Tue";
+                }
+                else if (dayNumber === 3) {
+                    dayOfWeek = "Wed";
+                }
+                else if (dayNumber === 4) {
+                    dayOfWeek = "Thu";
+                }
+                else if (dayNumber === 5) {
+                    dayOfWeek = "Fri";
+                }
+                else if (dayNumber === 6) {
+                    dayOfWeek = "Sat";
+                }
+                return dayOfWeek;
+            };
+            getDayOfWeekName(dayNumber);
             weatherData = {
                 time: localTime,
+                dayOfWeek: dayOfWeek,
                 temperature: `${report.data.air_temperature}°C`,
                 symbolCode: symbolCode,
                 symbolMeaning: symbolMeaning,

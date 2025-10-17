@@ -32,6 +32,7 @@ interface fetchedGeoDataFormat {
 }
 interface WeatherDataFormat {
     time: string;
+    dayOfWeek: string;
     temperature: string;
     symbolCode: number;
     symbolMeaning: string;

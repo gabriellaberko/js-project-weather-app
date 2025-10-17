@@ -95,6 +95,7 @@ interface fetchedGeoDataFormat {
 
 interface WeatherDataFormat {
   time: string;
+  dayOfWeek: string;
   temperature: string;
   symbolCode: number;
   symbolMeaning: string;
@@ -167,6 +168,7 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
     return;
   }
 
+  // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
   weatherIconBox.innerHTML += `
   <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[0]?.symbolCode}.svg" alt="weather icon">  
   `
@@ -260,8 +262,33 @@ const fetchWeatherData = async () => {
         minute: "2-digit"
       });
 
+      const dayNumber: number = (new Date(localTime)).getDay();
+      let dayOfWeek: string = "";
+
+      const getDayOfWeekName = (dayNumber: number) => {
+        if(dayNumber === 0) {
+          dayOfWeek = "Sun";
+        } else if (dayNumber === 1) {
+          dayOfWeek = "Mon";
+        } else if (dayNumber === 2) {
+          dayOfWeek = "Tue";
+        } else if (dayNumber === 3) {
+          dayOfWeek = "Wed";
+        } else if (dayNumber === 4) {
+          dayOfWeek = "Thu";
+        } else if (dayNumber === 5) {
+          dayOfWeek = "Fri";
+        } else if (dayNumber === 6) {
+          dayOfWeek = "Sat";
+        }
+      return dayOfWeek;
+      };
+
+      getDayOfWeekName(dayNumber);
+
       weatherData = {
         time: localTime,
+        dayOfWeek: dayOfWeek,
         temperature: `${report.data.air_temperature}°C`,
         symbolCode: symbolCode,
         symbolMeaning: symbolMeaning,
