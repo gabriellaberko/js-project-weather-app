@@ -89,7 +89,7 @@ let index = 1;
 const getIndexOfLocations = () => {
     if (index < locations.length) {
         getLocationAndCoordinates(index);
-        // increase the index for every click
+        // increment the index for every click
         index++;
     }
     else {
@@ -152,6 +152,7 @@ const insertWeatherData = (index, place, municipality, county) => {
     // reset elements before filling it
     weatherIconBox.innerHTML = "";
     weatherText.innerHTML = "";
+    weeklyDetails.innerHTML = "";
     // if missing location or weather data
     if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;

@@ -150,7 +150,7 @@ const getIndexOfLocations = () => {
 
   if (index < locations.length) {
     getLocationAndCoordinates(index);
-    // increase the index for every click
+    // increment the index for every click
     index++;
   } else {
     // when we have gone through the array length, run function with first object from array and reset index
@@ -228,6 +228,7 @@ const insertWeatherData = (index: number, place: string, municipality: string, c
   // reset elements before filling it
   weatherIconBox.innerHTML = "";
   weatherText.innerHTML = "";
+  weeklyDetails.innerHTML = "";
 
 
   // if missing location or weather data
