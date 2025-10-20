@@ -56,6 +56,7 @@ interface GroupedWeatherDataFormat {
 const weatherText: HTMLElement = document.getElementById("weather-text");
 const weatherIconBox: HTMLElement = document.getElementById("weather-icon-box");
 const weeklyDetails: HTMLElement = document.getElementById("weekly-details");
+const arrowButton: HTMLButtonElement = document.getElementById("arrow-button");
 
 
 
@@ -138,11 +139,25 @@ const geoArray: GeoDataFormat[] = []
 
 let weatherArrayGroupedByDate: GroupedWeatherDataFormat[] = [];
 
+let index = 1;
 
 
 /*------ Logic --------*/
 
-// TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
+
+
+const getIndexOfLocations = () => {
+
+  if (index < locations.length) {
+    getLocationAndCoordinates(index);
+    // increase the index for every click
+    index++;
+  } else {
+    // when we have gone through the array length, run function with first object from array and reset index
+    getLocationAndCoordinates(0);
+    index = 1;
+  }
+};
 
 
 const getLocationAndCoordinates = async (index: number) => {
@@ -164,7 +179,7 @@ const getLocationAndCoordinates = async (index: number) => {
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling insertWeatherData
   getWeeklyDetails();
-  insertWeatherData(municipality, county, place);
+  insertWeatherData(index, municipality, county, place);
 };
 
 
@@ -202,7 +217,7 @@ const getWeeklyDetails = () => {
 
 
 
-const insertWeatherData = (place: string, municipality: string, county: string) => {
+const insertWeatherData = (index: number, place: string, municipality: string, county: string) => {
 
   const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
     hour: "2-digit",
@@ -210,7 +225,8 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
     hour12: false
   });
 
-  // reset element before filling it
+  // reset elements before filling it
+  weatherIconBox.innerHTML = "";
   weatherText.innerHTML = "";
 
 
@@ -224,15 +240,15 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
 
   // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
   weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[0]?.symbolCode}.svg" alt="weather icon">  
+  <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
   `
 
   weatherText.innerHTML += `
-    <h1>${weatherArray[0]?.temperature}°C</h1>
+    <h1>${weatherArray[index]?.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
-    <p>${weatherArray[0]?.symbolMeaning}</p>
+    <p>${weatherArray[index]?.symbolMeaning}</p>
   `
   // tomorrow has index 1
   weeklyDetails.innerHTML += `
@@ -413,4 +429,9 @@ const fetchWeatherData = async () => {
 document.addEventListener("DOMContentLoaded", () => {
   //fetchGeoData();
   getLocationAndCoordinates(0);
+});
+
+
+arrowButton.addEventListener("click", () => {
+  getIndexOfLocations();
 });

@@ -46,6 +46,7 @@ interface GroupedWeatherDataFormat {
 declare const weatherText: HTMLElement;
 declare const weatherIconBox: HTMLElement;
 declare const weeklyDetails: HTMLElement;
+declare const arrowButton: HTMLButtonElement;
 declare const weatherUrl: string;
 declare const geoUrl: string;
 declare const weatherSymbols: {
@@ -60,10 +61,12 @@ declare const weatherArray: WeatherDataFormat[];
 declare let geoData: GeoDataFormat;
 declare const geoArray: GeoDataFormat[];
 declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];
+declare let index: number;
+declare const getIndexOfLocations: () => void;
 declare const getLocationAndCoordinates: (index: number) => Promise<void>;
 declare const getWeeklyDetails: () => void;
 declare const getTempMinMax: (index: number) => string;
-declare const insertWeatherData: (place: string, municipality: string, county: string) => void;
+declare const insertWeatherData: (index: number, place: string, municipality: string, county: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
 declare const fetchGeoData: () => Promise<void>;
 declare const fetchWeatherData: () => Promise<void>;

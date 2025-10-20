@@ -18,6 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const weatherText = document.getElementById("weather-text");
 const weatherIconBox = document.getElementById("weather-icon-box");
 const weeklyDetails = document.getElementById("weekly-details");
+const arrowButton = document.getElementById("arrow-button");
 /*------ Global variables --------*/
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
@@ -83,8 +84,20 @@ const weatherArray = [];
 let geoData;
 const geoArray = [];
 let weatherArrayGroupedByDate = [];
+let index = 1;
 /*------ Logic --------*/
-// TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
+const getIndexOfLocations = () => {
+    if (index < locations.length) {
+        getLocationAndCoordinates(index);
+        // increase the index for every click
+        index++;
+    }
+    else {
+        // when we have gone through the array length, run function with first object from array and reset index
+        getLocationAndCoordinates(0);
+        index = 1;
+    }
+};
 const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, function* () {
     if (!locations || locations.length === 0) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
@@ -100,7 +113,7 @@ const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, f
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling insertWeatherData
     getWeeklyDetails();
-    insertWeatherData(municipality, county, place);
+    insertWeatherData(index, municipality, county, place);
 });
 const getWeeklyDetails = () => {
     weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects, weatherReport) => {
@@ -129,14 +142,15 @@ const getTempMinMax = (index) => {
     const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
     return minMaxTemp;
 };
-const insertWeatherData = (place, municipality, county) => {
+const insertWeatherData = (index, place, municipality, county) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false
     });
-    // reset element before filling it
+    // reset elements before filling it
+    weatherIconBox.innerHTML = "";
     weatherText.innerHTML = "";
     // if missing location or weather data
     if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
@@ -146,14 +160,14 @@ const insertWeatherData = (place, municipality, county) => {
     // insert data. Index 0 is always the current weather report in the weatherArray
     // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
     weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
+  <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
   `;
     weatherText.innerHTML += `
-    <h1>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
+    <h1>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
-    <p>${(_c = weatherArray[0]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
+    <p>${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
   `;
     // tomorrow has index 1
     weeklyDetails.innerHTML += `
@@ -303,5 +317,8 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
 document.addEventListener("DOMContentLoaded", () => {
     //fetchGeoData();
     getLocationAndCoordinates(0);
+});
+arrowButton.addEventListener("click", () => {
+    getIndexOfLocations();
 });
 //# sourceMappingURL=script.js.map
