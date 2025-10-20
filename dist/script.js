@@ -18,13 +18,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const weatherText = document.getElementById("weather-text");
 const weatherIconBox = document.getElementById("weather-icon-box");
 const weeklyDetails = document.getElementById("weekly-details");
+<<<<<<< HEAD
 const searchBtn = document.getElementById("search-btn");
 const closeBtn = document.getElementById("close-btn");
 const searchBox = document.querySelector(".search-box");
 const searchInput = document.getElementById("search-input");
+=======
+const arrowButton = document.getElementById("arrow-button");
+>>>>>>> a3cc5dc74815757fc70e638800d5ce63c235e391
 /*------ Global variables --------*/
-const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
     { id: 2, description: "Nearly clear sky" },
@@ -83,28 +85,40 @@ const locations = [
 let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
 let weatherData;
-const weatherArray = [];
-let geoData;
-const geoArray = [];
+let weatherArray = [];
+let searchedLocation;
+let searchedLocations = [];
 let weatherArrayGroupedByDate = [];
+let index = 1;
 /*------ Logic --------*/
-// TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
-const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!locations || locations.length === 0) {
+const getIndexOfLocations = () => {
+    if (index < locations.length) {
+        getLocationAndCoordinates(locations, index);
+        // increment the index for every click
+        index++;
+    }
+    else {
+        // when we have gone through the array length, run function with first object from array and reset index
+        getLocationAndCoordinates(locations, 0);
+        index = 1;
+    }
+};
+const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!array || array.length === 0) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
-    const location = locations[index];
-    lon = location.lon;
-    lat = location.lat;
+    const arrayObject = array[index];
+    lon = arrayObject.lon;
+    lat = arrayObject.lat;
     //Fallback for municipality and county
-    const municipality = location.municipality || "Missing value";
-    const county = location.county || "Missing value";
-    const place = location.place || "Missing value";
+    const municipality = arrayObject.municipality || "Missing value";
+    const county = arrayObject.county || "Missing value";
+    const place = arrayObject.place || "Missing value";
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling insertWeatherData
     getWeeklyDetails();
-    insertWeatherData(municipality, county, place);
+    insertWeatherData(index, municipality, county, place);
 });
 const getWeeklyDetails = () => {
     weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects, weatherReport) => {
@@ -133,15 +147,17 @@ const getTempMinMax = (index) => {
     const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
     return minMaxTemp;
 };
-const insertWeatherData = (place, municipality, county) => {
+const insertWeatherData = (index, place, municipality, county) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false
     });
-    // reset element before filling it
+    // reset elements before filling it
+    weatherIconBox.innerHTML = "";
     weatherText.innerHTML = "";
+    weeklyDetails.innerHTML = "";
     // if missing location or weather data
     if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
@@ -150,14 +166,14 @@ const insertWeatherData = (place, municipality, county) => {
     // insert data. Index 0 is always the current weather report in the weatherArray
     // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
     weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[0]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
+  <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
   `;
     weatherText.innerHTML += `
-    <h1>${(_b = weatherArray[0]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
+    <h1>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
-    <p>${(_c = weatherArray[0]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
+    <p>${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
   `;
     // tomorrow has index 1
     weeklyDetails.innerHTML += `
@@ -205,33 +221,12 @@ const mapSymbolCode = (symbolCode) => {
     // return the description of that object
     return (rightWeatherObj ? rightWeatherObj.description : "");
 };
-// TO DO: create search input field and event listener for it. Use search input as dynamic value for the geoUrl and call fetchGeoData function. Fetch geo data and use properties from the first object (should be the best match?) in the array [0] ??
-const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const response = yield fetch(geoUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const fetchedGeoReports = yield response.json();
-        fetchedGeoReports.map((report) => {
-            geoData = {
-                country: report.country,
-                county: report.county,
-                municipality: report.municipality,
-                lat: Number((report.lat).toFixed(6)),
-                lon: Number((report.lon).toFixed(6))
-            };
-            geoArray.push(geoData);
-        });
-    }
-    catch (error) {
-        console.error('Fetch error:', error);
-    }
-});
 /*------ Fetch data --------*/
 const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     // create dynamic fetch url inside fetch function to get updated values for lon & lat
     const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
+    // reset weatherArray before filling it with weather reports
+    weatherArray = [];
     try {
         const response = yield fetch(filteredWeatherUrl);
         if (!response.ok) {
@@ -303,8 +298,36 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error('Fetch error:', error);
     }
 });
+const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function* () {
+    // TO DO: switch /places/ to a dynamic variable containing the search input
+    const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/${searchInput}?sweonly=true`;
+    searchedLocations = [];
+    try {
+        const response = yield fetch(geoUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const fetchedGeoReports = yield response.json();
+        fetchedGeoReports.map((report) => {
+            searchedLocation = {
+                country: report.country,
+                place: report.place,
+                county: report.county,
+                municipality: report.municipality,
+                lat: Number((report.lat).toFixed(6)),
+                lon: Number((report.lon).toFixed(6))
+            };
+            searchedLocations.push(searchedLocation);
+        });
+        getLocationAndCoordinates(searchedLocations, 0);
+    }
+    catch (error) {
+        console.error('Fetch error:', error);
+    }
+});
 /*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
+<<<<<<< HEAD
     searchBtn.addEventListener("click", () => {
         searchBox.classList.add("active");
         closeBtn.style.display = "inline-block";
@@ -320,5 +343,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     //fetchGeoData();
     getLocationAndCoordinates(0);
+=======
+    getLocationAndCoordinates(locations, 0);
+});
+arrowButton.addEventListener("click", () => {
+    getIndexOfLocations();
+>>>>>>> a3cc5dc74815757fc70e638800d5ce63c235e391
 });
 //# sourceMappingURL=script.js.map

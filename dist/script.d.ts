@@ -13,7 +13,7 @@ interface fetchedGeoDataFormat {
     geonameid: number;
     lon: number;
     lat: number;
-    municipality?: string;
+    municipality: string;
     place: string;
     population: number;
     timezone: string;
@@ -46,12 +46,16 @@ interface GroupedWeatherDataFormat {
 declare const weatherText: HTMLElement;
 declare const weatherIconBox: HTMLElement;
 declare const weeklyDetails: HTMLElement;
+<<<<<<< HEAD
 declare const searchBtn: HTMLElement;
 declare const closeBtn: HTMLElement;
 declare const searchBox: HTMLElement;
 declare const searchInput: HTMLInputElement;
 declare const weatherUrl: string;
 declare const geoUrl: string;
+=======
+declare const arrowButton: HTMLButtonElement;
+>>>>>>> a3cc5dc74815757fc70e638800d5ce63c235e391
 declare const weatherSymbols: {
     id: number;
     description: string;
@@ -60,15 +64,17 @@ declare const locations: GeoDataFormat[];
 declare let lon: number;
 declare let lat: number;
 declare let weatherData: WeatherDataFormat;
-declare const weatherArray: WeatherDataFormat[];
-declare let geoData: GeoDataFormat;
-declare const geoArray: GeoDataFormat[];
+declare let weatherArray: WeatherDataFormat[];
+declare let searchedLocation: GeoDataFormat;
+declare let searchedLocations: GeoDataFormat[];
 declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];
-declare const getLocationAndCoordinates: (index: number) => Promise<void>;
+declare let index: number;
+declare const getIndexOfLocations: () => void;
+declare const getLocationAndCoordinates: (array: GeoDataFormat[], index: number) => Promise<void>;
 declare const getWeeklyDetails: () => void;
 declare const getTempMinMax: (index: number) => string;
-declare const insertWeatherData: (place: string, municipality: string, county: string) => void;
+declare const insertWeatherData: (index: number, place: string, municipality: string, county: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
-declare const fetchGeoData: () => Promise<void>;
 declare const fetchWeatherData: () => Promise<void>;
+declare const fetchGeoData: (searchInput: string) => Promise<void>;
 //# sourceMappingURL=script.d.ts.map

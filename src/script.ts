@@ -13,7 +13,7 @@ interface fetchedGeoDataFormat {
   geonameid: number;
   lon: number;
   lat: number;
-  municipality?: string;
+  municipality: string;
   place: string;
   population: number;
   timezone: string;
@@ -60,13 +60,12 @@ const searchBtn = document.getElementById("search-btn")! as HTMLElement;
 const closeBtn = document.getElementById("close-btn")! as HTMLElement;
 const searchBox = document.querySelector(".search-box")! as HTMLElement;
 const searchInput = document.getElementById("search-input")! as HTMLInputElement;
+const arrowButton: HTMLButtonElement = document.getElementById("arrow-button")! as HTMLButtonElement;
+
 
 
 
 /*------ Global variables --------*/
-const weatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-
-const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
 
 
 const weatherSymbols = [
@@ -133,41 +132,55 @@ let lat: number = 59.329468; // Stockholm
 
 let weatherData: WeatherDataFormat;
 
-const weatherArray: WeatherDataFormat[] = [];
+let weatherArray: WeatherDataFormat[] = [];
 
-let geoData: GeoDataFormat;
+let searchedLocation: GeoDataFormat;
 
-const geoArray: GeoDataFormat[] = []
+let searchedLocations: GeoDataFormat[] = [];
 
 let weatherArrayGroupedByDate: GroupedWeatherDataFormat[] = [];
 
+let index = 1;
 
 
 /*------ Logic --------*/
 
-// TO DO: create a function that loops through the length of the variable locations and returning an index - called upon click on arrow button
 
 
-const getLocationAndCoordinates = async (index: number) => {
-  if (!locations || locations.length === 0) {
+const getIndexOfLocations = () => {
+
+  if (index < locations.length) {
+    getLocationAndCoordinates(locations, index);
+    // increment the index for every click
+    index++;
+  } else {
+    // when we have gone through the array length, run function with first object from array and reset index
+    getLocationAndCoordinates(locations, 0);
+    index = 1;
+  }
+};
+
+
+const getLocationAndCoordinates = async (array: GeoDataFormat[], index: number) => {
+  if (!array || array.length === 0) {
     weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
     return;
   }
 
-  const location: GeoDataFormat = locations[index];
+  const arrayObject: GeoDataFormat = array[index];
 
-  lon = location.lon;
-  lat = location.lat;
+  lon = arrayObject.lon;
+  lat = arrayObject.lat;
 
   //Fallback for municipality and county
-  const municipality = location.municipality || "Missing value";
-  const county = location.county || "Missing value";
-  const place = location.place || "Missing value";
+  const municipality = arrayObject.municipality || "Missing value";
+  const county = arrayObject.county || "Missing value";
+  const place = arrayObject.place || "Missing value";
 
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling insertWeatherData
   getWeeklyDetails();
-  insertWeatherData(municipality, county, place);
+  insertWeatherData(index, municipality, county, place);
 };
 
 
@@ -206,7 +219,7 @@ const getTempMinMax = (index: number) => {
 
 
 
-const insertWeatherData = (place: string, municipality: string, county: string) => {
+const insertWeatherData = (index: number, place: string, municipality: string, county: string) => {
 
   const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
     hour: "2-digit",
@@ -214,8 +227,10 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
     hour12: false
   });
 
-  // reset element before filling it
+  // reset elements before filling it
+  weatherIconBox.innerHTML = "";
   weatherText.innerHTML = "";
+  weeklyDetails.innerHTML = "";
 
 
   // if missing location or weather data
@@ -228,15 +243,15 @@ const insertWeatherData = (place: string, municipality: string, county: string) 
 
   // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
   weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[0]?.symbolCode}.svg" alt="weather icon">  
+  <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
   `
 
   weatherText.innerHTML += `
-    <h1>${weatherArray[0]?.temperature}°C</h1>
+    <h1>${weatherArray[index]?.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
-    <p>${weatherArray[0]?.symbolMeaning}</p>
+    <p>${weatherArray[index]?.symbolMeaning}</p>
   `
   // tomorrow has index 1
   weeklyDetails.innerHTML += `
@@ -290,46 +305,19 @@ const mapSymbolCode = (symbolCode: number) => {
 };
 
 
-// TO DO: create search input field and event listener for it. Use search input as dynamic value for the geoUrl and call fetchGeoData function. Fetch geo data and use properties from the first object (should be the best match?) in the array [0] ??
-const fetchGeoData = async () => {
-  try {
-    const response = await fetch(geoUrl);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const fetchedGeoReports: fetchedGeoDataFormat[] = await response.json();
-
-    fetchedGeoReports.map((report: fetchedGeoDataFormat) => {
-
-      geoData = {
-        country: report.country,
-        county: report.county,
-        municipality: report.municipality,
-        lat: Number((report.lat).toFixed(6)),
-        lon: Number((report.lon).toFixed(6))
-      };
-
-      geoArray.push(geoData);
-    });
-
-  }
-  catch (error) {
-    console.error('Fetch error:', error);
-  }
-};
-
-
 
 
 /*------ Fetch data --------*/
+
 
 
 const fetchWeatherData = async () => {
 
   // create dynamic fetch url inside fetch function to get updated values for lon & lat
   const filteredWeatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
+
+  // reset weatherArray before filling it with weather reports
+  weatherArray = [];
 
   try {
     const response = await fetch(filteredWeatherUrl);
@@ -411,25 +399,72 @@ const fetchWeatherData = async () => {
 
 
 
+
+const fetchGeoData = async (searchInput: string) => {
+
+  // TO DO: switch /places/ to a dynamic variable containing the search input
+  const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/${searchInput}?sweonly=true`;
+
+  searchedLocations = [];
+
+  try {
+    const response = await fetch(geoUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const fetchedGeoReports: fetchedGeoDataFormat[] = await response.json();
+
+    fetchedGeoReports.map((report: fetchedGeoDataFormat) => {
+
+      searchedLocation = {
+        country: report.country,
+        place: report.place,
+        county: report.county,
+        municipality: report.municipality,
+        lat: Number((report.lat).toFixed(6)),
+        lon: Number((report.lon).toFixed(6))
+      };
+
+      searchedLocations.push(searchedLocation);
+    });
+
+    getLocationAndCoordinates(searchedLocations, 0);
+
+  }
+  catch (error) {
+    console.error('Fetch error:', error);
+  }
+};
+
+
+
 /*------ Event listeners --------*/
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  searchBtn.addEventListener("click", () => {
-    searchBox.classList.add("active");
-    closeBtn.style.display = "inline-block";
-    searchBtn.style.display = "none";
-    searchInput.focus();
-  });
 
-  closeBtn.addEventListener("click", () => {
-    searchInput.value = "";
-    searchBox.classList.remove("active");
-    closeBtn.style.display = "none";
-    searchBtn.style.display = "inline-block";
-    searchInput.value = "";
-  });
-  //fetchGeoData();
-  getLocationAndCoordinates(0);
+
+  getLocationAndCoordinates(locations, 0);
+
 });
 
+searchBtn.addEventListener("click", () => {
+  searchBox.classList.add("active");
+  closeBtn.style.display = "inline-block";
+  searchBtn.style.display = "none";
+  searchInput.focus();
+});
+
+closeBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  searchBox.classList.remove("active");
+  closeBtn.style.display = "none";
+  searchBtn.style.display = "inline-block";
+  searchInput.value = "";
+});
+
+arrowButton.addEventListener("click", () => {
+  getIndexOfLocations();
+});
