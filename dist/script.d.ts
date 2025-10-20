@@ -57,7 +57,7 @@ declare const locations: GeoDataFormat[];
 declare let lon: number;
 declare let lat: number;
 declare let weatherData: WeatherDataFormat;
-declare const weatherArray: WeatherDataFormat[];
+declare let weatherArray: WeatherDataFormat[];
 declare let geoData: GeoDataFormat;
 declare const geoArray: GeoDataFormat[];
 declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];

@@ -80,7 +80,7 @@ const locations = [
 let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
 let weatherData;
-const weatherArray = [];
+let weatherArray = [];
 let geoData;
 const geoArray = [];
 let weatherArrayGroupedByDate = [];
@@ -243,6 +243,8 @@ const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
 const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     // create dynamic fetch url inside fetch function to get updated values for lon & lat
     const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
+    // reset weatherArray before filling it with weather reports
+    weatherArray = [];
     try {
         const response = yield fetch(filteredWeatherUrl);
         if (!response.ok) {

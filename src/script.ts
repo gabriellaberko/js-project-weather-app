@@ -131,7 +131,7 @@ let lat: number = 59.329468; // Stockholm
 
 let weatherData: WeatherDataFormat;
 
-const weatherArray: WeatherDataFormat[] = [];
+let weatherArray: WeatherDataFormat[] = [];
 
 let geoData: GeoDataFormat;
 
@@ -343,6 +343,9 @@ const fetchWeatherData = async () => {
 
   // create dynamic fetch url inside fetch function to get updated values for lon & lat
   const filteredWeatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
+
+  // reset weatherArray before filling it with weather reports
+  weatherArray = [];
 
   try {
     const response = await fetch(filteredWeatherUrl);
