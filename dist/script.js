@@ -325,7 +325,9 @@ const fetchSunData = (lat, lon) => __awaiter(void 0, void 0, void 0, function* (
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = yield response.json();
-        console.log(data.results);
+        const sunriseTime = data.results.sunrise;
+        const sunsetTime = data.results.sunset;
+        console.log(sunriseTime, sunriseTime);
     }
     catch (error) {
         console.error('Fetch error:', error);

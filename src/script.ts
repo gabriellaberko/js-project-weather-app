@@ -444,7 +444,11 @@ const fetchSunData = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
-    console.log(data.results);
+   
+    const sunriseTime = data.results.sunrise;
+    const sunsetTime = data.results.sunset;
+
+    console.log(sunriseTime, sunriseTime);
   }
   catch (error) {
     console.error('Fetch error:', error);
