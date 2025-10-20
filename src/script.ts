@@ -62,8 +62,6 @@ const arrowButton: HTMLButtonElement = document.getElementById("arrow-button");
 
 
 /*------ Global variables --------*/
-const weatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-
 
 
 const weatherSymbols = [
@@ -307,44 +305,6 @@ const mapSymbolCode = (symbolCode: number) => {
 /*------ Fetch data --------*/
 
 
-// TO DO: create search input field and event listener for it. Use search input as dynamic value for the geoUrl and call fetchGeoData function. Fetch geo data and use properties from the first object (should be the best match?) in the array [0] ??
-const fetchGeoData = async () => {
-
-  // TO DO: switch /places/ to a dynamic variable containing the search input
-  const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
-
-  searchedLocations = [];
-
-  try {
-    const response = await fetch(geoUrl);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const fetchedGeoReports: fetchedGeoDataFormat[] = await response.json();
-
-    fetchedGeoReports.map((report: fetchedGeoDataFormat) => {
-
-      searchedLocation = {
-        country: report.country,
-        place: report.place,
-        county: report.county,
-        municipality: report.municipality,
-        lat: Number((report.lat).toFixed(6)),
-        lon: Number((report.lon).toFixed(6))
-      };
-
-      searchedLocations.push(searchedLocation);
-    });
-
-  }
-  catch (error) {
-    console.error('Fetch error:', error);
-  }
-};
-
-
 
 const fetchWeatherData = async () => {
 
@@ -425,6 +385,47 @@ const fetchWeatherData = async () => {
 
       weatherArray.push(weatherData);
     });
+
+  }
+  catch (error) {
+    console.error('Fetch error:', error);
+  }
+};
+
+
+
+
+const fetchGeoData = async (searchInput: string) => {
+
+  // TO DO: switch /places/ to a dynamic variable containing the search input
+  const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/${searchInput}?sweonly=true`;
+
+  searchedLocations = [];
+
+  try {
+    const response = await fetch(geoUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const fetchedGeoReports: fetchedGeoDataFormat[] = await response.json();
+
+    fetchedGeoReports.map((report: fetchedGeoDataFormat) => {
+
+      searchedLocation = {
+        country: report.country,
+        place: report.place,
+        county: report.county,
+        municipality: report.municipality,
+        lat: Number((report.lat).toFixed(6)),
+        lon: Number((report.lon).toFixed(6))
+      };
+
+      searchedLocations.push(searchedLocation);
+    });
+
+    getLocationAndCoordinates(searchedLocations, 0);
 
   }
   catch (error) {

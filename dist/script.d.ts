@@ -47,7 +47,6 @@ declare const weatherText: HTMLElement;
 declare const weatherIconBox: HTMLElement;
 declare const weeklyDetails: HTMLElement;
 declare const arrowButton: HTMLButtonElement;
-declare const weatherUrl: string;
 declare const weatherSymbols: {
     id: number;
     description: string;
@@ -67,6 +66,6 @@ declare const getWeeklyDetails: () => void;
 declare const getTempMinMax: (index: number) => string;
 declare const insertWeatherData: (index: number, place: string, municipality: string, county: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
-declare const fetchGeoData: () => Promise<void>;
 declare const fetchWeatherData: () => Promise<void>;
+declare const fetchGeoData: (searchInput: string) => Promise<void>;
 //# sourceMappingURL=script.d.ts.map
