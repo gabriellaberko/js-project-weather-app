@@ -21,7 +21,6 @@ const weeklyDetails = document.getElementById("weekly-details");
 const arrowButton = document.getElementById("arrow-button");
 /*------ Global variables --------*/
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
     { id: 2, description: "Nearly clear sky" },
@@ -81,35 +80,35 @@ let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
 let weatherData;
 let weatherArray = [];
-let geoData;
-const geoArray = [];
+let searchedLocation;
+let searchedLocations = [];
 let weatherArrayGroupedByDate = [];
 let index = 1;
 /*------ Logic --------*/
 const getIndexOfLocations = () => {
     if (index < locations.length) {
-        getLocationAndCoordinates(index);
+        getLocationAndCoordinates(locations, index);
         // increment the index for every click
         index++;
     }
     else {
         // when we have gone through the array length, run function with first object from array and reset index
-        getLocationAndCoordinates(0);
+        getLocationAndCoordinates(locations, 0);
         index = 1;
     }
 };
-const getLocationAndCoordinates = (index) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!locations || locations.length === 0) {
+const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!array || array.length === 0) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
-    const location = locations[index];
-    lon = location.lon;
-    lat = location.lat;
+    const arrayObject = array[index];
+    lon = arrayObject.lon;
+    lat = arrayObject.lat;
     //Fallback for municipality and county
-    const municipality = location.municipality || "Missing value";
-    const county = location.county || "Missing value";
-    const place = location.place || "Missing value";
+    const municipality = arrayObject.municipality || "Missing value";
+    const county = arrayObject.county || "Missing value";
+    const place = arrayObject.place || "Missing value";
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling insertWeatherData
     getWeeklyDetails();
@@ -216,8 +215,12 @@ const mapSymbolCode = (symbolCode) => {
     // return the description of that object
     return (rightWeatherObj ? rightWeatherObj.description : "");
 };
+/*------ Fetch data --------*/
 // TO DO: create search input field and event listener for it. Use search input as dynamic value for the geoUrl and call fetchGeoData function. Fetch geo data and use properties from the first object (should be the best match?) in the array [0] ??
 const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
+    // TO DO: switch /places/ to a dynamic variable containing the search input
+    const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
+    searchedLocations = [];
     try {
         const response = yield fetch(geoUrl);
         if (!response.ok) {
@@ -225,21 +228,21 @@ const fetchGeoData = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         const fetchedGeoReports = yield response.json();
         fetchedGeoReports.map((report) => {
-            geoData = {
+            searchedLocation = {
                 country: report.country,
+                place: report.place,
                 county: report.county,
                 municipality: report.municipality,
                 lat: Number((report.lat).toFixed(6)),
                 lon: Number((report.lon).toFixed(6))
             };
-            geoArray.push(geoData);
+            searchedLocations.push(searchedLocation);
         });
     }
     catch (error) {
         console.error('Fetch error:', error);
     }
 });
-/*------ Fetch data --------*/
 const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     // create dynamic fetch url inside fetch function to get updated values for lon & lat
     const filteredWeatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json?timeseries=72&parameters=air_temperature,symbol_code`;
@@ -318,8 +321,7 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 /*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
-    //fetchGeoData();
-    getLocationAndCoordinates(0);
+    getLocationAndCoordinates(locations, 0);
 });
 arrowButton.addEventListener("click", () => {
     getIndexOfLocations();
