@@ -173,8 +173,11 @@ const getLocationAndCoordinates = async (array: GeoDataFormat[], index: number) 
   const county = arrayObject.county || "Missing value";
   const place = arrayObject.place || "Missing value";
 
+  console.log(lon, lat)
+
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling insertWeatherData
+  fetchSunData(lon, lat);
   getWeeklyDetails();
   insertWeatherData(index, municipality, county, place);
 };
@@ -432,7 +435,7 @@ const fetchGeoData = async (searchInput: string) => {
 };
 
 
-const fetchSunData = async (lat: number, lon: number) => {
+const fetchSunData = async (lon: number, lat: number) => {
 
   const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=today`;
 
@@ -444,18 +447,19 @@ const fetchSunData = async (lat: number, lon: number) => {
     }
 
     const data = await response.json();
+
+    console.log(data);
    
     const sunriseTime = data.results.sunrise;
     const sunsetTime = data.results.sunset;
 
-    console.log(sunriseTime, sunriseTime);
+    console.log(sunriseTime, sunsetTime);
   }
   catch (error) {
     console.error('Fetch error:', error);
   }
 };
 
-fetchSunData(36.720160, -4.420340);
 
 
 /*------ Event listeners --------*/

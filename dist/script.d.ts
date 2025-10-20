@@ -68,5 +68,5 @@ declare const insertWeatherData: (index: number, place: string, municipality: st
 declare const mapSymbolCode: (symbolCode: number) => string;
 declare const fetchWeatherData: () => Promise<void>;
 declare const fetchGeoData: (searchInput: string) => Promise<void>;
-declare const fetchSunData: (lat: number, lon: number) => Promise<void>;
+declare const fetchSunData: (lon: number, lat: number) => Promise<void>;
 //# sourceMappingURL=script.d.ts.map

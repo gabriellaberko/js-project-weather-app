@@ -108,8 +108,10 @@ const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, vo
     const municipality = arrayObject.municipality || "Missing value";
     const county = arrayObject.county || "Missing value";
     const place = arrayObject.place || "Missing value";
+    console.log(lon, lat);
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling insertWeatherData
+    fetchSunData(lon, lat);
     getWeeklyDetails();
     insertWeatherData(index, municipality, county, place);
 });
@@ -317,7 +319,7 @@ const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function
         console.error('Fetch error:', error);
     }
 });
-const fetchSunData = (lat, lon) => __awaiter(void 0, void 0, void 0, function* () {
+const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* () {
     const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=today`;
     try {
         const response = yield fetch(sunUrl);
@@ -325,15 +327,15 @@ const fetchSunData = (lat, lon) => __awaiter(void 0, void 0, void 0, function* (
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = yield response.json();
+        console.log(data);
         const sunriseTime = data.results.sunrise;
         const sunsetTime = data.results.sunset;
-        console.log(sunriseTime, sunriseTime);
+        console.log(sunriseTime, sunsetTime);
     }
     catch (error) {
         console.error('Fetch error:', error);
     }
 });
-fetchSunData(36.720160, -4.420340);
 /*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
     getLocationAndCoordinates(locations, 0);
