@@ -13,7 +13,7 @@ interface fetchedGeoDataFormat {
   geonameid: number;
   lon: number;
   lat: number;
-  municipality?: string;
+  municipality: string;
   place: string;
   population: number;
   timezone: string;
@@ -62,9 +62,6 @@ const arrowButton: HTMLButtonElement = document.getElementById("arrow-button");
 
 
 /*------ Global variables --------*/
-const weatherUrl: string = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
-
-const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
 
 
 const weatherSymbols = [
@@ -133,9 +130,9 @@ let weatherData: WeatherDataFormat;
 
 let weatherArray: WeatherDataFormat[] = [];
 
-let geoData: GeoDataFormat;
+let searchedLocation: GeoDataFormat;
 
-const geoArray: GeoDataFormat[] = []
+let searchedLocations: GeoDataFormat[] = [];
 
 let weatherArrayGroupedByDate: GroupedWeatherDataFormat[] = [];
 
@@ -149,32 +146,32 @@ let index = 1;
 const getIndexOfLocations = () => {
 
   if (index < locations.length) {
-    getLocationAndCoordinates(index);
+    getLocationAndCoordinates(locations, index);
     // increment the index for every click
     index++;
   } else {
     // when we have gone through the array length, run function with first object from array and reset index
-    getLocationAndCoordinates(0);
+    getLocationAndCoordinates(locations, 0);
     index = 1;
   }
 };
 
 
-const getLocationAndCoordinates = async (index: number) => {
-  if (!locations || locations.length === 0) {
+const getLocationAndCoordinates = async (array: GeoDataFormat[], index: number) => {
+  if (!array || array.length === 0) {
     weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
     return;
   }
 
-  const location: GeoDataFormat = locations[index];
+  const arrayObject: GeoDataFormat = array[index];
 
-  lon = location.lon;
-  lat = location.lat;
+  lon = arrayObject.lon;
+  lat = arrayObject.lat;
 
   //Fallback for municipality and county
-  const municipality = location.municipality || "Missing value";
-  const county = location.county || "Missing value";
-  const place = location.place || "Missing value";
+  const municipality = arrayObject.municipality || "Missing value";
+  const county = arrayObject.county || "Missing value";
+  const place = arrayObject.place || "Missing value";
 
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling insertWeatherData
@@ -303,37 +300,6 @@ const mapSymbolCode = (symbolCode: number) => {
 };
 
 
-// TO DO: create search input field and event listener for it. Use search input as dynamic value for the geoUrl and call fetchGeoData function. Fetch geo data and use properties from the first object (should be the best match?) in the array [0] ??
-const fetchGeoData = async () => {
-  try {
-    const response = await fetch(geoUrl);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const fetchedGeoReports: fetchedGeoDataFormat[] = await response.json();
-
-    fetchedGeoReports.map((report: fetchedGeoDataFormat) => {
-
-      geoData = {
-        country: report.country,
-        county: report.county,
-        municipality: report.municipality,
-        lat: Number((report.lat).toFixed(6)),
-        lon: Number((report.lon).toFixed(6))
-      };
-
-      geoArray.push(geoData);
-    });
-
-  }
-  catch (error) {
-    console.error('Fetch error:', error);
-  }
-};
-
-
 
 
 /*------ Fetch data --------*/
@@ -427,12 +393,72 @@ const fetchWeatherData = async () => {
 
 
 
+
+const fetchGeoData = async (searchInput: string) => {
+
+  const geoUrl: string = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/${searchInput}?sweonly=true`;
+
+  searchedLocations = [];
+
+  try {
+    const response = await fetch(geoUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const fetchedGeoReports: fetchedGeoDataFormat[] = await response.json();
+
+    fetchedGeoReports.map((report: fetchedGeoDataFormat) => {
+
+      searchedLocation = {
+        country: report.country,
+        place: report.place,
+        county: report.county,
+        municipality: report.municipality,
+        lat: Number((report.lat).toFixed(6)),
+        lon: Number((report.lon).toFixed(6))
+      };
+
+      searchedLocations.push(searchedLocation);
+    });
+
+    getLocationAndCoordinates(searchedLocations, 0);
+
+  }
+  catch (error) {
+    console.error('Fetch error:', error);
+  }
+};
+
+
+const fetchSunData = async (lat: number, lon: number) => {
+
+  const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=today`;
+
+  try {
+    const response = await fetch(sunUrl);
+
+    if(!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data.results);
+  }
+  catch (error) {
+    console.error('Fetch error:', error);
+  }
+};
+
+fetchSunData(36.720160, -4.420340);
+
+
 /*------ Event listeners --------*/
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  //fetchGeoData();
-  getLocationAndCoordinates(0);
+  getLocationAndCoordinates(locations, 0);
 });
 
 
