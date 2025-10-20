@@ -56,7 +56,10 @@ interface GroupedWeatherDataFormat {
 const weatherText: HTMLElement = document.getElementById("weather-text");
 const weatherIconBox: HTMLElement = document.getElementById("weather-icon-box");
 const weeklyDetails: HTMLElement = document.getElementById("weekly-details");
-
+const searchBtn = document.getElementById("search-btn")! as HTMLElement;
+const closeBtn = document.getElementById("close-btn")! as HTMLElement;
+const searchBox = document.querySelector(".search-box")! as HTMLElement;
+const searchInput = document.getElementById("search-input")! as HTMLInputElement;
 
 
 
@@ -175,7 +178,7 @@ const getWeeklyDetails = () => {
     let existingGroupedObject = accumulatedGroupedObjects.find(groupedObject => groupedObject.date === weatherReport.date);
 
     // create a new grouped object for the date
-    if(!existingGroupedObject) {
+    if (!existingGroupedObject) {
       accumulatedGroupedObjects.push({
         date: weatherReport.date,
         dayOfWeek: weatherReport.dayOfWeek,
@@ -189,16 +192,17 @@ const getWeeklyDetails = () => {
 
     return accumulatedGroupedObjects;
   }, []
-  )};
+  )
+};
 
-  const getTempMinMax = (index: number) => {
-    const tempArray = weatherArrayGroupedByDate[index]?.temperature
-    const minTemp = Math.min(...tempArray);
-    const maxTemp = Math.max(...tempArray);
-    const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
+const getTempMinMax = (index: number) => {
+  const tempArray = weatherArrayGroupedByDate[index]?.temperature
+  const minTemp = Math.min(...tempArray);
+  const maxTemp = Math.max(...tempArray);
+  const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
 
-    return minMaxTemp;
-  }
+  return minMaxTemp;
+}
 
 
 
@@ -364,7 +368,7 @@ const fetchWeatherData = async () => {
       let dayOfWeek: string = "";
 
       const getDayOfWeekName = (dayNumber: number) => {
-        if(dayNumber === 0) {
+        if (dayNumber === 0) {
           dayOfWeek = "Sun";
         } else if (dayNumber === 1) {
           dayOfWeek = "Mon";
@@ -379,7 +383,7 @@ const fetchWeatherData = async () => {
         } else if (dayNumber === 6) {
           dayOfWeek = "Sat";
         }
-      return dayOfWeek;
+        return dayOfWeek;
       };
 
       getDayOfWeekName(dayNumber);
@@ -411,6 +415,21 @@ const fetchWeatherData = async () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+  searchBtn.addEventListener("click", () => {
+    searchBox.classList.add("active");
+    closeBtn.style.display = "inline-block";
+    searchBtn.style.display = "none";
+    searchInput.focus();
+  });
+
+  closeBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    searchBox.classList.remove("active");
+    closeBtn.style.display = "none";
+    searchBtn.style.display = "inline-block";
+    searchInput.value = "";
+  });
   //fetchGeoData();
   getLocationAndCoordinates(0);
 });
+

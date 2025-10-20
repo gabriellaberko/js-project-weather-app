@@ -18,6 +18,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const weatherText = document.getElementById("weather-text");
 const weatherIconBox = document.getElementById("weather-icon-box");
 const weeklyDetails = document.getElementById("weekly-details");
+const searchBtn = document.getElementById("search-btn");
+const closeBtn = document.getElementById("close-btn");
+const searchBox = document.querySelector(".search-box");
+const searchInput = document.getElementById("search-input");
 /*------ Global variables --------*/
 const weatherUrl = `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/18.062639/lat/59.329468/data.json`;
 const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/stockholm?sweonly=true`;
@@ -301,6 +305,19 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 /*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
+    searchBtn.addEventListener("click", () => {
+        searchBox.classList.add("active");
+        closeBtn.style.display = "inline-block";
+        searchBtn.style.display = "none";
+        searchInput.focus();
+    });
+    closeBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        searchBox.classList.remove("active");
+        closeBtn.style.display = "none";
+        searchBtn.style.display = "inline-block";
+        searchInput.value = "";
+    });
     //fetchGeoData();
     getLocationAndCoordinates(0);
 });

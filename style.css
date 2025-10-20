@@ -8,6 +8,100 @@ body {
 .app-container {
   max-width: 500px;
   box-shadow: 0 0 5px rgb(193, 193, 193);
+  position: relative;
+}
+
+.search-container {
+  position: absolute;
+  top: 20px;
+  padding: 0 40px;
+  gap: 4px;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.search-btn,
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: white;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.search-btn:hover {
+  transform: scale(1.1);
+  color: #d1d1d1;
+}
+
+.close-btn {
+  display: none;
+}
+
+.close-btn:hover {
+  transform: scale(1.1);
+  color: #d1d1d1;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 4px 8px;
+  margin-left: 8px;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-width 0.3s ease, opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.search-box.active {
+  max-width: 250px;
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+#search-input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  min-width: 0;
+  flex: 1;
+  color: #333;
+  background: transparent;
+
+  ::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.search-btn-right {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  /* padding: 6px 10px; */
+  transition: background 0.2s ease, transform 0.2s ease;
+  height: 100%;
+}
+
+.search-btn-right:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
 }
 
 .weather-overview {
@@ -16,7 +110,7 @@ body {
   height: 580px;
   padding: 0 40px;
   color: white;
-  background: linear-gradient(120deg,rgba(133, 137, 255, 1) 0%, rgba(232, 233, 255, 1) 65%);
+  background: linear-gradient(120deg, rgba(133, 137, 255, 1) 0%, rgba(232, 233, 255, 1) 65%);
   clip-path: ellipse(110% 75% at 50% 10%);
   z-index: 0;
 }
@@ -81,5 +175,3 @@ body {
   display: flex;
   gap: 42px;
 }
-
-

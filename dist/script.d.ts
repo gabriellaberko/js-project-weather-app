@@ -46,6 +46,10 @@ interface GroupedWeatherDataFormat {
 declare const weatherText: HTMLElement;
 declare const weatherIconBox: HTMLElement;
 declare const weeklyDetails: HTMLElement;
+declare const searchBtn: HTMLElement;
+declare const closeBtn: HTMLElement;
+declare const searchBox: HTMLElement;
+declare const searchInput: HTMLInputElement;
 declare const weatherUrl: string;
 declare const geoUrl: string;
 declare const weatherSymbols: {
