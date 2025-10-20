@@ -60,6 +60,7 @@ const searchBtn = document.getElementById("search-btn")! as HTMLElement;
 const closeBtn = document.getElementById("close-btn")! as HTMLElement;
 const searchBox = document.querySelector(".search-box")! as HTMLElement;
 const searchInput = document.getElementById("search-input")! as HTMLInputElement;
+const searchBtnRight = document.getElementById("search-btn-right")! as HTMLButtonElement;
 const arrowButton: HTMLButtonElement = document.getElementById("arrow-button")! as HTMLButtonElement;
 
 
@@ -463,6 +464,24 @@ closeBtn.addEventListener("click", () => {
   closeBtn.style.display = "none";
   searchBtn.style.display = "inline-block";
   searchInput.value = "";
+});
+
+searchBtnRight.addEventListener("click", (event) => {
+  event.preventDefault();
+  const userInput = searchInput.value.trim();
+  if (userInput) {
+    fetchGeoData(userInput);
+  }
+});
+
+searchInput.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    const userInput = searchInput.value.trim();
+    if (userInput) {
+      fetchGeoData(userInput);
+    }
+  }
 });
 
 arrowButton.addEventListener("click", () => {

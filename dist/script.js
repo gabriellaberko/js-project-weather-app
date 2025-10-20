@@ -18,14 +18,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const weatherText = document.getElementById("weather-text");
 const weatherIconBox = document.getElementById("weather-icon-box");
 const weeklyDetails = document.getElementById("weekly-details");
-<<<<<<< HEAD
 const searchBtn = document.getElementById("search-btn");
 const closeBtn = document.getElementById("close-btn");
 const searchBox = document.querySelector(".search-box");
 const searchInput = document.getElementById("search-input");
-=======
+const searchBtnRight = document.getElementById("search-btn-right");
 const arrowButton = document.getElementById("arrow-button");
->>>>>>> a3cc5dc74815757fc70e638800d5ce63c235e391
 /*------ Global variables --------*/
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
@@ -327,27 +325,38 @@ const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function
 });
 /*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
-<<<<<<< HEAD
-    searchBtn.addEventListener("click", () => {
-        searchBox.classList.add("active");
-        closeBtn.style.display = "inline-block";
-        searchBtn.style.display = "none";
-        searchInput.focus();
-    });
-    closeBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        searchBox.classList.remove("active");
-        closeBtn.style.display = "none";
-        searchBtn.style.display = "inline-block";
-        searchInput.value = "";
-    });
-    //fetchGeoData();
-    getLocationAndCoordinates(0);
-=======
     getLocationAndCoordinates(locations, 0);
+});
+searchBtn.addEventListener("click", () => {
+    searchBox.classList.add("active");
+    closeBtn.style.display = "inline-block";
+    searchBtn.style.display = "none";
+    searchInput.focus();
+});
+closeBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    searchBox.classList.remove("active");
+    closeBtn.style.display = "none";
+    searchBtn.style.display = "inline-block";
+    searchInput.value = "";
+});
+searchBtnRight.addEventListener("click", (event) => {
+    event.preventDefault();
+    const userInput = searchInput.value.trim();
+    if (userInput) {
+        fetchGeoData(userInput);
+    }
+});
+searchInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        const userInput = searchInput.value.trim();
+        if (userInput) {
+            fetchGeoData(userInput);
+        }
+    }
 });
 arrowButton.addEventListener("click", () => {
     getIndexOfLocations();
->>>>>>> a3cc5dc74815757fc70e638800d5ce63c235e391
 });
 //# sourceMappingURL=script.js.map

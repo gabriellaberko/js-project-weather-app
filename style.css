@@ -55,10 +55,9 @@ body {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 4px 8px;
   margin-left: 8px;
+  padding-left: 4px;
   max-width: 0;
   overflow: hidden;
   opacity: 0;
@@ -82,25 +81,32 @@ body {
   flex: 1;
   color: #333;
   background: transparent;
+}
 
-  ::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-  }
+#search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .search-btn-right {
-  background: rgba(255, 255, 255, 0.3);
+  background: transparent;
+  /* helt genomskinlig */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* tunn kant för att markera knappens form */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   cursor: pointer;
+  padding: 8px 12px;
   font-size: 16px;
-  color: #333;
-  /* padding: 6px 10px; */
-  transition: background 0.2s ease, transform 0.2s ease;
+  color: white;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   height: 100%;
 }
 
 .search-btn-right:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.25);
   transform: scale(1.05);
 }
 
