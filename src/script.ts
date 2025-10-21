@@ -138,9 +138,23 @@ let weatherArrayGroupedByDate: GroupedWeatherDataFormat[] = [];
 
 let index = 1;
 
+let dayOrNight: string = "";
+
+
+
 
 /*------ Logic --------*/
 
+
+const checkIfDayOrNight = (sunriseTimeUTC: Date, sunsetTimeUTC: Date) => {
+  const currentTimeUTC = new Date(); 
+  
+  if(sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
+    dayOrNight = "day";
+  } else {
+    dayOrNight = "night";
+  }
+};
 
 
 const getIndexOfLocations = () => {
@@ -305,6 +319,7 @@ const mapSymbolCode = (symbolCode: number) => {
 
 
 
+
 /*------ Fetch data --------*/
 
 
@@ -448,8 +463,8 @@ const fetchSunData = async (lon: number, lat: number) => {
 
     const data = await response.json();
    
-    const sunriseTimeUTC: Date = data.results.sunrise;
-    const sunsetTimeUTC: Date = data.results.sunset;
+    const sunriseTimeUTC: Date = new Date(data.results.sunrise);
+    const sunsetTimeUTC: Date = new Date(data.results.sunset);
 
     const localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
       hour: "2-digit",
@@ -462,7 +477,10 @@ const fetchSunData = async (lon: number, lat: number) => {
       minute: "2-digit",
       hour12: false
     });
+
+    checkIfDayOrNight(sunriseTimeUTC, sunsetTimeUTC);
   }
+
   catch (error) {
     console.error('Fetch error:', error);
   }

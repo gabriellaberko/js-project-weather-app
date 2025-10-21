@@ -83,7 +83,17 @@ let searchedLocation;
 let searchedLocations = [];
 let weatherArrayGroupedByDate = [];
 let index = 1;
+let dayOrNight = "";
 /*------ Logic --------*/
+const checkIfDayOrNight = (sunriseTimeUTC, sunsetTimeUTC) => {
+    const currentTimeUTC = new Date();
+    if (sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
+        dayOrNight = "day";
+    }
+    else {
+        dayOrNight = "night";
+    }
+};
 const getIndexOfLocations = () => {
     if (index < locations.length) {
         getLocationAndCoordinates(locations, index);
@@ -327,8 +337,8 @@ const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* (
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = yield response.json();
-        const sunriseTimeUTC = data.results.sunrise;
-        const sunsetTimeUTC = data.results.sunset;
+        const sunriseTimeUTC = new Date(data.results.sunrise);
+        const sunsetTimeUTC = new Date(data.results.sunset);
         const localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
             hour: "2-digit",
             minute: "2-digit",
@@ -339,6 +349,7 @@ const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* (
             minute: "2-digit",
             hour12: false
         });
+        checkIfDayOrNight(sunriseTimeUTC, sunsetTimeUTC);
     }
     catch (error) {
         console.error('Fetch error:', error);
