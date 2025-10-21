@@ -7,13 +7,17 @@ body {
 .flex-container {
   display: flex;
   justify-content: center;
-  margin: 4rem auto;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 /* TO DO: center the container on bigger screens */
 .app-container {
-  width: 35vh;
-  box-shadow: 0 0 5px rgb(193, 193, 193);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
   position: relative;
+  box-shadow: 0 0 5px rgb(193, 193, 193);
 }
 
 .search-container {
@@ -135,19 +139,43 @@ body {
   margin-top: 12px;
 }
 
+.weather-text {
+  position: relative;
+  margin: 0px 16px;
+}
+
+.weather-condition {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.weather-condition .weather-icon {
+  display: flex;
+  gap: 12px;
+  min-width: 90px;
+  height: auto;
+}
+
+h1 {
+  font-size: 60px;
+  font-weight: 400;
+}
+
+h2 {
+  font-size: 32px;
+  font-weight: 300;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 300;
+}
+
 .sunrise-sunset {
   display: flex;
   gap: 42px;
-}
-
-.weather-icon-box {
-  margin-right: 30px;
-  align-self: flex-end;
-}
-
-.weather-icon-box img {
-  min-width: 150px;
-  height: auto;
+  margin-left: 16px;
 }
 
 .arrow-button {
@@ -187,5 +215,7 @@ body {
 
 .details {
   display: flex;
-  gap: 42px;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 180px;
 }

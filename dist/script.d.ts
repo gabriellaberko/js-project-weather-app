@@ -44,7 +44,6 @@ interface GroupedWeatherDataFormat {
     symbolCode: number[];
 }
 declare const weatherText: HTMLElement;
-declare const weatherIconBox: HTMLElement;
 declare const weeklyDetails: HTMLElement;
 declare const searchBtn: HTMLElement;
 declare const closeBtn: HTMLElement;

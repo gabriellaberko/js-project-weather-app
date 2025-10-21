@@ -11,12 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 [];
 [];
-;
-;
-;
 /*------ DOM elements --------*/
 const weatherText = document.getElementById("weather-text");
-const weatherIconBox = document.getElementById("weather-icon-box");
 const weeklyDetails = document.getElementById("weekly-details");
 const searchBtn = document.getElementById("search-btn");
 const closeBtn = document.getElementById("close-btn");
@@ -53,7 +49,7 @@ const weatherSymbols = [
     { id: 24, description: "Heavy sleet" },
     { id: 25, description: "Light snowfall" },
     { id: 26, description: "Moderate snowfall" },
-    { id: 27, description: "Heavy snowfall" }
+    { id: 27, description: "Heavy snowfall" },
 ];
 const locations = [
     {
@@ -62,7 +58,7 @@ const locations = [
         county: "Stockholms län",
         municipality: "Stockholm",
         lon: 18.062639,
-        lat: 59.329468
+        lat: 59.329468,
     },
     {
         country: "Sverige",
@@ -70,7 +66,7 @@ const locations = [
         county: "Västra Götalands län",
         municipality: "Göteborg",
         lon: 11.966666,
-        lat: 57.716666
+        lat: 57.716666,
     },
     {
         country: "Sverige",
@@ -78,8 +74,8 @@ const locations = [
         county: "Västerbottens län",
         municipality: "Umeå",
         lon: 20.25,
-        lat: 63.833333
-    }
+        lat: 63.833333,
+    },
 ];
 let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
@@ -134,14 +130,14 @@ const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, vo
 });
 const getWeeklyDetails = () => {
     weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects, weatherReport) => {
-        let existingGroupedObject = accumulatedGroupedObjects.find(groupedObject => groupedObject.date === weatherReport.date);
+        let existingGroupedObject = accumulatedGroupedObjects.find((groupedObject) => groupedObject.date === weatherReport.date);
         // create a new grouped object for the date
         if (!existingGroupedObject) {
             accumulatedGroupedObjects.push({
                 date: weatherReport.date,
                 dayOfWeek: weatherReport.dayOfWeek,
                 temperature: [weatherReport.temperature],
-                symbolCode: [weatherReport.symbolCode]
+                symbolCode: [weatherReport.symbolCode],
             });
         }
         else {
@@ -164,29 +160,30 @@ const insertWeatherData = (index, place, municipality, county) => {
     const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: false
+        hour12: false,
     });
     // reset elements before filling it
-    weatherIconBox.innerHTML = "";
     weatherText.innerHTML = "";
     sunriseSunsetDiv.innerHTML = "";
     weeklyDetails.innerHTML = "";
     // if missing location or weather data
-    if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
+    if (!locations ||
+        locations.length === 0 ||
+        !weatherArray ||
+        weatherArray.length === 0) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
     // insert data. Index 0 is always the current weather report in the weatherArray
-    // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
-    weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
-  `;
     weatherText.innerHTML += `
-    <h1>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
+    <h1>${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
-    <p>${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
+    <div class="weather-condition">
+      <p>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.symbolMeaning}</p>
+      <img class="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolCode}.svg" alt="weather icon">  
+    </div>
   `;
     sunriseSunsetDiv.innerHTML += `
     <p>Sunrise: ${localSunriseTime}</p>
@@ -197,35 +194,35 @@ const insertWeatherData = (index, place, municipality, county) => {
     <div class="day-box">
       <p class="day">${(_d = weatherArrayGroupedByDate[1]) === null || _d === void 0 ? void 0 : _d.dayOfWeek}</p>
       <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_e = weatherArrayGroupedByDate[1]) === null || _e === void 0 ? void 0 : _e.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_e = weatherArrayGroupedByDate[1]) === null || _e === void 0 ? void 0 : _e.symbolCode[2]}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(1)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${(_f = weatherArrayGroupedByDate[2]) === null || _f === void 0 ? void 0 : _f.dayOfWeek}</p>
       <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_g = weatherArrayGroupedByDate[2]) === null || _g === void 0 ? void 0 : _g.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_g = weatherArrayGroupedByDate[2]) === null || _g === void 0 ? void 0 : _g.symbolCode[2]}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(2)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${(_h = weatherArrayGroupedByDate[3]) === null || _h === void 0 ? void 0 : _h.dayOfWeek}</p>
       <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_j = weatherArrayGroupedByDate[3]) === null || _j === void 0 ? void 0 : _j.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_j = weatherArrayGroupedByDate[3]) === null || _j === void 0 ? void 0 : _j.symbolCode[2]}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(3)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${(_k = weatherArrayGroupedByDate[4]) === null || _k === void 0 ? void 0 : _k.dayOfWeek}</p>
       <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_l = weatherArrayGroupedByDate[4]) === null || _l === void 0 ? void 0 : _l.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_l = weatherArrayGroupedByDate[4]) === null || _l === void 0 ? void 0 : _l.symbolCode[2]}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(4)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${(_m = weatherArrayGroupedByDate[5]) === null || _m === void 0 ? void 0 : _m.dayOfWeek}</p>
       <div class="details">
-        <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_o = weatherArrayGroupedByDate[5]) === null || _o === void 0 ? void 0 : _o.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_o = weatherArrayGroupedByDate[5]) === null || _o === void 0 ? void 0 : _o.symbolCode[2]}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(5)}</p>
       </div>
     </div>
@@ -233,10 +230,9 @@ const insertWeatherData = (index, place, municipality, county) => {
 };
 const mapSymbolCode = (symbolCode) => {
     // find the object in weatherSymbols that matches the symbol code
-    const rightWeatherObj = weatherSymbols.find(weatherSymbol => weatherSymbol.id ===
-        symbolCode);
+    const rightWeatherObj = weatherSymbols.find((weatherSymbol) => weatherSymbol.id === symbolCode);
     // return the description of that object
-    return (rightWeatherObj ? rightWeatherObj.description : "");
+    return rightWeatherObj ? rightWeatherObj.description : "";
 };
 /*------ Fetch data --------*/
 const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -250,8 +246,8 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = yield response.json();
-        const lon = Number((data.geometry.coordinates[0]).toFixed(6));
-        const lat = Number((data.geometry.coordinates[1]).toFixed(6));
+        const lon = Number(data.geometry.coordinates[0].toFixed(6));
+        const lat = Number(data.geometry.coordinates[1].toFixed(6));
         const fetchedWeatherReports = data.timeSeries;
         fetchedWeatherReports.map((report) => {
             const symbolCode = report.data.symbol_code;
@@ -262,15 +258,15 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
                 // month: "2-digit",
                 // day: "2-digit",
                 hour: "2-digit",
-                minute: "2-digit"
+                minute: "2-digit",
             });
             const localDate = new Date(report.time).toLocaleString("sv-SE", {
                 timeZone: "Europe/Stockholm",
                 year: "numeric",
                 month: "2-digit",
-                day: "2-digit"
+                day: "2-digit",
             });
-            const dayNumber = (new Date(localDate)).getDay();
+            const dayNumber = new Date(localDate).getDay();
             let dayOfWeek = "";
             const getDayOfWeekName = (dayNumber) => {
                 if (dayNumber === 0) {
@@ -306,13 +302,13 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
                 symbolCode: symbolCode,
                 symbolMeaning: symbolMeaning,
                 lon: lon,
-                lat: lat
+                lat: lat,
             };
             weatherArray.push(weatherData);
         });
     }
     catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
     }
 });
 const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function* () {
@@ -330,15 +326,15 @@ const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function
                 place: report.place,
                 county: report.county,
                 municipality: report.municipality,
-                lat: Number((report.lat).toFixed(6)),
-                lon: Number((report.lon).toFixed(6))
+                lat: Number(report.lat.toFixed(6)),
+                lon: Number(report.lon.toFixed(6)),
             };
             searchedLocations.push(searchedLocation);
         });
         getLocationAndCoordinates(searchedLocations, 0);
     }
     catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
     }
 });
 const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* () {
@@ -354,17 +350,17 @@ const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* (
         localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
             hour: "2-digit",
             minute: "2-digit",
-            hour12: false
+            hour12: false,
         });
         localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
             hour: "2-digit",
             minute: "2-digit",
-            hour12: false
+            hour12: false,
         });
         checkIfDayOrNight(sunriseTimeUTC, sunsetTimeUTC);
     }
     catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
     }
 });
 /*------ Event listeners --------*/
