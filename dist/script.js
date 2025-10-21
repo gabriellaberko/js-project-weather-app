@@ -320,17 +320,25 @@ const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function
     }
 });
 const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* () {
-    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=today`;
+    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0&date=today`;
     try {
         const response = yield fetch(sunUrl);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = yield response.json();
-        console.log(data);
-        const sunriseTime = data.results.sunrise;
-        const sunsetTime = data.results.sunset;
-        console.log(sunriseTime, sunsetTime);
+        const sunriseTimeUTC = data.results.sunrise;
+        const sunsetTimeUTC = data.results.sunset;
+        const localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+        const localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
     }
     catch (error) {
         console.error('Fetch error:', error);

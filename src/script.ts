@@ -437,7 +437,7 @@ const fetchGeoData = async (searchInput: string) => {
 
 const fetchSunData = async (lon: number, lat: number) => {
 
-  const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=today`;
+  const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0&date=today`;
 
   try {
     const response = await fetch(sunUrl);
@@ -447,13 +447,21 @@ const fetchSunData = async (lon: number, lat: number) => {
     }
 
     const data = await response.json();
-
-    console.log(data);
    
-    const sunriseTime = data.results.sunrise;
-    const sunsetTime = data.results.sunset;
+    const sunriseTimeUTC: Date = data.results.sunrise;
+    const sunsetTimeUTC: Date = data.results.sunset;
 
-    console.log(sunriseTime, sunsetTime);
+    const localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+
+    const localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
   }
   catch (error) {
     console.error('Fetch error:', error);
