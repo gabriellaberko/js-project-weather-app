@@ -19,6 +19,7 @@ const weatherText = document.getElementById("weather-text");
 const weatherIconBox = document.getElementById("weather-icon-box");
 const weeklyDetails = document.getElementById("weekly-details");
 const arrowButton = document.getElementById("arrow-button");
+const sunriseSunsetDiv = document.getElementById("sunrise-sunset");
 /*------ Global variables --------*/
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
@@ -164,6 +165,7 @@ const insertWeatherData = (index, place, municipality, county) => {
     // reset elements before filling it
     weatherIconBox.innerHTML = "";
     weatherText.innerHTML = "";
+    sunriseSunsetDiv.innerHTML = "";
     weeklyDetails.innerHTML = "";
     // if missing location or weather data
     if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
@@ -181,6 +183,10 @@ const insertWeatherData = (index, place, municipality, county) => {
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
     <p>${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
+  `;
+    sunriseSunsetDiv.innerHTML += `
+    <p>Sunrise: ${localSunriseTime}</p>
+    <p>Sunset: ${localSunsetTime}</p>
   `;
     // tomorrow has index 1
     weeklyDetails.innerHTML += `

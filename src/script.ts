@@ -57,6 +57,7 @@ const weatherText: HTMLElement = document.getElementById("weather-text");
 const weatherIconBox: HTMLElement = document.getElementById("weather-icon-box");
 const weeklyDetails: HTMLElement = document.getElementById("weekly-details");
 const arrowButton: HTMLButtonElement = document.getElementById("arrow-button");
+const sunriseSunsetDiv: HTMLElement = document.getElementById("sunrise-sunset");
 
 
 
@@ -244,6 +245,7 @@ const insertWeatherData = (index: number, place: string, municipality: string, c
   // reset elements before filling it
   weatherIconBox.innerHTML = "";
   weatherText.innerHTML = "";
+  sunriseSunsetDiv.innerHTML = "";
   weeklyDetails.innerHTML = "";
 
 
@@ -267,6 +269,12 @@ const insertWeatherData = (index: number, place: string, municipality: string, c
     <p>Time: ${currentLocalTime}</p>
     <p>${weatherArray[index]?.symbolMeaning}</p>
   `
+
+  sunriseSunsetDiv.innerHTML += `
+    <p>Sunrise: ${localSunriseTime}</p>
+    <p>Sunset: ${localSunsetTime}</p>
+  `
+
   // tomorrow has index 1
   weeklyDetails.innerHTML += `
     <div class="day-box">

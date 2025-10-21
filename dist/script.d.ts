@@ -47,6 +47,7 @@ declare const weatherText: HTMLElement;
 declare const weatherIconBox: HTMLElement;
 declare const weeklyDetails: HTMLElement;
 declare const arrowButton: HTMLButtonElement;
+declare const sunriseSunsetDiv: HTMLElement;
 declare const weatherSymbols: {
     id: number;
     description: string;
