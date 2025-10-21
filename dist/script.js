@@ -24,6 +24,7 @@ const searchBox = document.querySelector(".search-box");
 const searchInput = document.getElementById("search-input");
 const searchBtnRight = document.getElementById("search-btn-right");
 const arrowButton = document.getElementById("arrow-button");
+const sunriseSunsetDiv = document.getElementById("sunrise-sunset");
 /*------ Global variables --------*/
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
@@ -82,6 +83,9 @@ const locations = [
 ];
 let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
+let localSunriseTime = "";
+let localSunsetTime = "";
+let dayOrNight = "";
 let weatherData;
 let weatherArray = [];
 let searchedLocation;
@@ -89,6 +93,15 @@ let searchedLocations = [];
 let weatherArrayGroupedByDate = [];
 let index = 1;
 /*------ Logic --------*/
+const checkIfDayOrNight = (sunriseTimeUTC, sunsetTimeUTC) => {
+    const currentTimeUTC = new Date();
+    if (sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
+        dayOrNight = "day";
+    }
+    else {
+        dayOrNight = "night";
+    }
+};
 const getIndexOfLocations = () => {
     if (index < locations.length) {
         getLocationAndCoordinates(locations, index);
@@ -114,7 +127,8 @@ const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, vo
     const county = arrayObject.county || "Missing value";
     const place = arrayObject.place || "Missing value";
     // fetch new data with updated coordinates
-    yield fetchWeatherData(); // wait for data until calling insertWeatherData
+    yield fetchWeatherData(); // wait for data until calling the other functions
+    yield fetchSunData(lon, lat); // wait for data until calling the other functions
     getWeeklyDetails();
     insertWeatherData(index, municipality, county, place);
 });
@@ -155,6 +169,7 @@ const insertWeatherData = (index, place, municipality, county) => {
     // reset elements before filling it
     weatherIconBox.innerHTML = "";
     weatherText.innerHTML = "";
+    sunriseSunsetDiv.innerHTML = "";
     weeklyDetails.innerHTML = "";
     // if missing location or weather data
     if ((!locations || locations.length === 0) || (!weatherArray || weatherArray.length === 0)) {
@@ -164,7 +179,7 @@ const insertWeatherData = (index, place, municipality, county) => {
     // insert data. Index 0 is always the current weather report in the weatherArray
     // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
     weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
+  <img id="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
   `;
     weatherText.innerHTML += `
     <h1>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
@@ -172,6 +187,10 @@ const insertWeatherData = (index, place, municipality, county) => {
     <h3>${municipality}, ${county}</h3>
     <p>Time: ${currentLocalTime}</p>
     <p>${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolMeaning}</p>
+  `;
+    sunriseSunsetDiv.innerHTML += `
+    <p>Sunrise: ${localSunriseTime}</p>
+    <p>Sunset: ${localSunsetTime}</p>
   `;
     // tomorrow has index 1
     weeklyDetails.innerHTML += `
@@ -297,7 +316,10 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function* () {
+<<<<<<< HEAD
     // TO DO: switch /places/ to a dynamic variable containing the search input
+=======
+>>>>>>> fetch-sun-data
     const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/${searchInput}?sweonly=true`;
     searchedLocations = [];
     try {
@@ -323,6 +345,7 @@ const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function
         console.error('Fetch error:', error);
     }
 });
+<<<<<<< HEAD
 /*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
     getLocationAndCoordinates(locations, 0);
@@ -355,6 +378,37 @@ searchInput.addEventListener("keypress", (event) => {
             fetchGeoData(userInput);
         }
     }
+=======
+const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* () {
+    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0&date=today`;
+    try {
+        const response = yield fetch(sunUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = yield response.json();
+        const sunriseTimeUTC = new Date(data.results.sunrise);
+        const sunsetTimeUTC = new Date(data.results.sunset);
+        localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+        localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+        checkIfDayOrNight(sunriseTimeUTC, sunsetTimeUTC);
+    }
+    catch (error) {
+        console.error('Fetch error:', error);
+    }
+});
+/*------ Event listeners --------*/
+document.addEventListener("DOMContentLoaded", () => {
+    getLocationAndCoordinates(locations, 0);
+>>>>>>> fetch-sun-data
 });
 arrowButton.addEventListener("click", () => {
     getIndexOfLocations();
