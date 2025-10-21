@@ -179,10 +179,12 @@ const insertWeatherData = (index, place, municipality, county) => {
     <h1>${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
-    <p>Time: ${currentLocalTime}</p>
-    <div class="weather-condition">
-      <p>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.symbolMeaning}</p>
-      <img class="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolCode}.svg" alt="weather icon">  
+    <div class="time-condition-flex-container">
+      <p>Time: ${currentLocalTime}</p>
+      <div class="weather-condition">
+        <p>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.symbolMeaning}</p>
+        <img class="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolCode}.svg" alt="weather icon">  
+      </div>
     </div>
   `;
     sunriseSunsetDiv.innerHTML += `

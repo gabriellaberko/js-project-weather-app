@@ -270,10 +270,12 @@ const insertWeatherData = (
     <h1>${weatherArray[index]?.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
-    <p>Time: ${currentLocalTime}</p>
-    <div class="weather-condition">
-      <p>${weatherArray[index]?.symbolMeaning}</p>
-      <img class="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
+    <div class="time-condition-flex-container">
+      <p>Time: ${currentLocalTime}</p>
+      <div class="weather-condition">
+        <p>${weatherArray[index]?.symbolMeaning}</p>
+        <img class="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
+      </div>
     </div>
   `;
 
