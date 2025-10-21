@@ -52,10 +52,7 @@ declare const searchBox: HTMLElement;
 declare const searchInput: HTMLInputElement;
 declare const searchBtnRight: HTMLButtonElement;
 declare const arrowButton: HTMLButtonElement;
-<<<<<<< HEAD
-=======
 declare const sunriseSunsetDiv: HTMLElement;
->>>>>>> fetch-sun-data
 declare const weatherSymbols: {
     id: number;
     description: string;
@@ -81,8 +78,5 @@ declare const insertWeatherData: (index: number, place: string, municipality: st
 declare const mapSymbolCode: (symbolCode: number) => string;
 declare const fetchWeatherData: () => Promise<void>;
 declare const fetchGeoData: (searchInput: string) => Promise<void>;
-<<<<<<< HEAD
-=======
 declare const fetchSunData: (lon: number, lat: number) => Promise<void>;
->>>>>>> fetch-sun-data
 //# sourceMappingURL=script.d.ts.map

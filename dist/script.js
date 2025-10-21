@@ -316,10 +316,6 @@ const fetchWeatherData = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function* () {
-<<<<<<< HEAD
-    // TO DO: switch /places/ to a dynamic variable containing the search input
-=======
->>>>>>> fetch-sun-data
     const geoUrl = `https://wpt-a-tst.smhi.se/backend-startpage/geo/autocomplete/places/${searchInput}?sweonly=true`;
     searchedLocations = [];
     try {
@@ -345,7 +341,32 @@ const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function
         console.error('Fetch error:', error);
     }
 });
-<<<<<<< HEAD
+const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* () {
+    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0&date=today`;
+    try {
+        const response = yield fetch(sunUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = yield response.json();
+        const sunriseTimeUTC = new Date(data.results.sunrise);
+        const sunsetTimeUTC = new Date(data.results.sunset);
+        localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+        localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+        checkIfDayOrNight(sunriseTimeUTC, sunsetTimeUTC);
+    }
+    catch (error) {
+        console.error('Fetch error:', error);
+    }
+});
 /*------ Event listeners --------*/
 document.addEventListener("DOMContentLoaded", () => {
     getLocationAndCoordinates(locations, 0);
@@ -378,37 +399,6 @@ searchInput.addEventListener("keypress", (event) => {
             fetchGeoData(userInput);
         }
     }
-=======
-const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* () {
-    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0&date=today`;
-    try {
-        const response = yield fetch(sunUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = yield response.json();
-        const sunriseTimeUTC = new Date(data.results.sunrise);
-        const sunsetTimeUTC = new Date(data.results.sunset);
-        localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-        });
-        localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-        });
-        checkIfDayOrNight(sunriseTimeUTC, sunsetTimeUTC);
-    }
-    catch (error) {
-        console.error('Fetch error:', error);
-    }
-});
-/*------ Event listeners --------*/
-document.addEventListener("DOMContentLoaded", () => {
-    getLocationAndCoordinates(locations, 0);
->>>>>>> fetch-sun-data
 });
 arrowButton.addEventListener("click", () => {
     getIndexOfLocations();
