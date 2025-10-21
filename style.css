@@ -1,12 +1,17 @@
 body {
   box-sizing: border-box;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
+.flex-container {
+  display: flex;
+  justify-content: center;
+  margin: 4rem auto;
+}
 /* TO DO: center the container on bigger screens */
 .app-container {
-  max-width: 500px;
+  width: 35vh;
   box-shadow: 0 0 5px rgb(193, 193, 193);
   position: relative;
 }
@@ -30,8 +35,7 @@ body {
   color: white;
   padding: 0;
   line-height: 1;
-  transition: transform 0.2s ease,
-    color 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .search-btn:hover {
@@ -116,7 +120,11 @@ body {
   height: 580px;
   padding: 0 40px;
   color: white;
-  background: linear-gradient(120deg, rgba(133, 137, 255, 1) 0%, rgba(232, 233, 255, 1) 65%);
+  background: linear-gradient(
+    120deg,
+    rgba(133, 137, 255, 1) 0%,
+    rgba(232, 233, 255, 1) 65%
+  );
   clip-path: ellipse(110% 75% at 50% 10%);
   z-index: 0;
 }

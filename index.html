@@ -1,84 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-  <title>Document</title>
-  <link
-    rel="stylesheet"
-    href="./style.css"
-  >
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  />
-</head>
+  <body>
+    <div class="flex-container">
+      <div class="app-container">
+        <!-- Search field -->
+        <div class="search-container">
+          <button class="search-btn" id="search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
 
-<body>
-  <div class="app-container">
-    <!-- Search field -->
-    <div class="search-container">
-      <button
-        class="search-btn"
-        id="search-btn"
-      >
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-
-      <button
-        class="close-btn"
-        id="close-btn"
-      >
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <!-- Search box -->
-      <div class="search-box">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Search"
-        />
-        <button
-          class="search-btn-right"
-          id="search-btn-right"
-        >
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
-    </div>
-
-
-    <div class="weather-overview">
-      <div class="weather-summary">
-        <div
-          class="weather-icon-box"
-          id="weather-icon-box"
-        >
+          <button class="close-btn" id="close-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <!-- Search box -->
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search" />
+            <button class="search-btn-right" id="search-btn-right">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
         </div>
-        <div
-          class="weather-text"
-          id="weather-text"
-        >
-        </div>
-      </div>
-      <div class="sunrise-sunset" id="sunrise-sunset">
-      </div>
-    </div>
-    <button
-      class="arrow-button"
-      id="arrow-button"
-    >&#10095;</button>
-    <div
-      class="weekly-details"
-      id="weekly-details"
-    >
-    </div>
-    <script src="dist/script.js"></script>
-  </div>
-</body>
 
+        <div class="weather-overview">
+          <div class="weather-summary">
+            <div class="weather-icon-box" id="weather-icon-box"></div>
+            <div class="weather-text" id="weather-text"></div>
+          </div>
+          <div class="sunrise-sunset" id="sunrise-sunset"></div>
+        </div>
+        <button class="arrow-button" id="arrow-button">&#10095;</button>
+        <div class="weekly-details" id="weekly-details"></div>
+        <script src="dist/script.js"></script>
+      </div>
+    </div>
+  </body>
 </html>
