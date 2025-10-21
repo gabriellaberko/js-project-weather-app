@@ -113,6 +113,7 @@ const getIndexOfLocations = () => {
 const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, void 0, function* () {
     if (!array || array.length === 0) {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
+        sunriseSunsetDiv.innerHTML = "";
         return;
     }
     const arrayObject = array[index];

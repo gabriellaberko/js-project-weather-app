@@ -177,6 +177,7 @@ const getLocationAndCoordinates = async (
 ) => {
   if (!array || array.length === 0) {
     weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
+    sunriseSunsetDiv.innerHTML = "";
     return;
   }
 
