@@ -54,13 +54,15 @@ declare const weatherSymbols: {
 declare const locations: GeoDataFormat[];
 declare let lon: number;
 declare let lat: number;
+declare let localSunriseTime: string;
+declare let localSunsetTime: string;
+declare let dayOrNight: string;
 declare let weatherData: WeatherDataFormat;
 declare let weatherArray: WeatherDataFormat[];
 declare let searchedLocation: GeoDataFormat;
 declare let searchedLocations: GeoDataFormat[];
 declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];
 declare let index: number;
-declare let dayOrNight: string;
 declare const checkIfDayOrNight: (sunriseTimeUTC: Date, sunsetTimeUTC: Date) => void;
 declare const getIndexOfLocations: () => void;
 declare const getLocationAndCoordinates: (array: GeoDataFormat[], index: number) => Promise<void>;

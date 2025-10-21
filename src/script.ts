@@ -125,6 +125,10 @@ const locations: GeoDataFormat[] = [
 let lon: number = 18.062639; // Stockholm
 let lat: number = 59.329468; // Stockholm
 
+let localSunriseTime: string = "";
+let localSunsetTime: string = "";
+let dayOrNight: string = "";
+
 
 let weatherData: WeatherDataFormat;
 
@@ -137,9 +141,6 @@ let searchedLocations: GeoDataFormat[] = [];
 let weatherArrayGroupedByDate: GroupedWeatherDataFormat[] = [];
 
 let index = 1;
-
-let dayOrNight: string = "";
-
 
 
 
@@ -190,8 +191,9 @@ const getLocationAndCoordinates = async (array: GeoDataFormat[], index: number) 
   console.log(lon, lat)
 
   // fetch new data with updated coordinates
-  await fetchWeatherData(); // wait for data until calling insertWeatherData
-  fetchSunData(lon, lat);
+  await fetchWeatherData(); // wait for data until calling the other functions
+  await fetchSunData(lon, lat); // wait for data until calling the other functions
+
   getWeeklyDetails();
   insertWeatherData(index, municipality, county, place);
 };
@@ -255,7 +257,7 @@ const insertWeatherData = (index: number, place: string, municipality: string, c
 
   // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
   weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/day/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
+  <img id="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
   `
 
   weatherText.innerHTML += `
@@ -466,13 +468,13 @@ const fetchSunData = async (lon: number, lat: number) => {
     const sunriseTimeUTC: Date = new Date(data.results.sunrise);
     const sunsetTimeUTC: Date = new Date(data.results.sunset);
 
-    const localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
+    localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false
     });
 
-    const localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
+    localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false

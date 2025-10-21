@@ -77,13 +77,15 @@ const locations = [
 ];
 let lon = 18.062639; // Stockholm
 let lat = 59.329468; // Stockholm
+let localSunriseTime = "";
+let localSunsetTime = "";
+let dayOrNight = "";
 let weatherData;
 let weatherArray = [];
 let searchedLocation;
 let searchedLocations = [];
 let weatherArrayGroupedByDate = [];
 let index = 1;
-let dayOrNight = "";
 /*------ Logic --------*/
 const checkIfDayOrNight = (sunriseTimeUTC, sunsetTimeUTC) => {
     const currentTimeUTC = new Date();
@@ -120,8 +122,8 @@ const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, vo
     const place = arrayObject.place || "Missing value";
     console.log(lon, lat);
     // fetch new data with updated coordinates
-    yield fetchWeatherData(); // wait for data until calling insertWeatherData
-    fetchSunData(lon, lat);
+    yield fetchWeatherData(); // wait for data until calling the other functions
+    yield fetchSunData(lon, lat); // wait for data until calling the other functions
     getWeeklyDetails();
     insertWeatherData(index, municipality, county, place);
 });
@@ -171,7 +173,7 @@ const insertWeatherData = (index, place, municipality, county) => {
     // insert data. Index 0 is always the current weather report in the weatherArray
     // TO DO: change path "day" to a variable which valur depends on current time - if it's daytime or night time
     weatherIconBox.innerHTML += `
-  <img id="weather-icon" src="weather_icons/centered/stroke/day/${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
+  <img id="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode}.svg" alt="weather icon">  
   `;
     weatherText.innerHTML += `
     <h1>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.temperature}°C</h1>
@@ -339,12 +341,12 @@ const fetchSunData = (lon, lat) => __awaiter(void 0, void 0, void 0, function* (
         const data = yield response.json();
         const sunriseTimeUTC = new Date(data.results.sunrise);
         const sunsetTimeUTC = new Date(data.results.sunset);
-        const localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
+        localSunriseTime = new Date(sunriseTimeUTC).toLocaleTimeString("sv-SE", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false
         });
-        const localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
+        localSunsetTime = new Date(sunsetTimeUTC).toLocaleTimeString("sv-SE", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false
