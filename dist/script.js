@@ -121,7 +121,6 @@ const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, vo
     const municipality = arrayObject.municipality || "Missing value";
     const county = arrayObject.county || "Missing value";
     const place = arrayObject.place || "Missing value";
-    console.log(lon, lat);
     // fetch new data with updated coordinates
     yield fetchWeatherData(); // wait for data until calling the other functions
     yield fetchSunData(lon, lat); // wait for data until calling the other functions

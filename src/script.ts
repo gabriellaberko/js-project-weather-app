@@ -189,8 +189,6 @@ const getLocationAndCoordinates = async (array: GeoDataFormat[], index: number) 
   const county = arrayObject.county || "Missing value";
   const place = arrayObject.place || "Missing value";
 
-  console.log(lon, lat)
-
   // fetch new data with updated coordinates
   await fetchWeatherData(); // wait for data until calling the other functions
   await fetchSunData(lon, lat); // wait for data until calling the other functions
