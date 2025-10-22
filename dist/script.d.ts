@@ -54,6 +54,7 @@ declare const searchBtnRight: HTMLButtonElement;
 declare const arrowButton: HTMLButtonElement;
 declare const sunriseSunsetDiv: HTMLElement;
 declare const weatherOverview: HTMLElement;
+declare const weatherEffectDiv: HTMLElement;
 declare const weatherSymbols: {
     id: number;
     description: string;
@@ -70,6 +71,7 @@ declare let searchedLocation: GeoDataFormat;
 declare let searchedLocations: GeoDataFormat[];
 declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];
 declare let index: number;
+declare const showRain: (currentSymbolCode: number) => void;
 declare const checkIfDayOrNight: (sunriseTimeUTC: Date, sunsetTimeUTC: Date) => void;
 declare const getIndexOfLocations: () => void;
 declare const getLocationAndCoordinates: (array: GeoDataFormat[], index: number) => Promise<void>;

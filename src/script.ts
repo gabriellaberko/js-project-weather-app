@@ -59,9 +59,10 @@ const closeBtn = document.getElementById("close-btn")! as HTMLElement;
 const searchBox = document.querySelector(".search-box")! as HTMLElement;
 const searchInput = document.getElementById("search-input")! as HTMLInputElement;
 const searchBtnRight = document.getElementById("search-btn-right")! as HTMLButtonElement;
-const arrowButton: HTMLButtonElement = document.getElementById("arrow-button")! as HTMLButtonElement;
+const arrowButton = document.getElementById("arrow-button")! as HTMLButtonElement;
 const sunriseSunsetDiv = document.getElementById("sunrise-sunset")! as HTMLElement;
 const weatherOverview = document.querySelector(".weather-overview")! as HTMLElement;
+const weatherEffectDiv = document.getElementById("weather-effect")! as HTMLElement;
 
 /*------ Global variables --------*/
 
@@ -146,6 +147,29 @@ let index = 1;
 
 /*------ Logic --------*/
 
+const showRain = (currentSymbolCode: number) => {
+
+  weatherEffectDiv.className = "weather-effect";
+
+  if (currentSymbolCode) {
+    //
+    if(currentSymbolCode >= 8 && currentSymbolCode <= 24) {
+      weatherEffectDiv.classList.add("rain");
+
+      const drops = 50;
+
+      for (let i = 0; i < drops; i++) {
+        const drop = document.createElement("span");
+        drop.style.left = Math.random() * 100 + "%";
+        drop.style.animationDuration = 0.5 + Math.random() * 0.5 + "s";
+        drop.style.animationDelay = Math.random() * 2 + "s";
+        weatherEffectDiv.appendChild(drop);
+      }
+    }
+  }
+};
+
+
 const checkIfDayOrNight = (sunriseTimeUTC: Date, sunsetTimeUTC: Date) => {
   const currentTimeUTC = new Date();
 
@@ -167,6 +191,7 @@ const getIndexOfLocations = () => {
     index = 1;
   }
 };
+
 
 const getLocationAndCoordinates = async (
   array: GeoDataFormat[],
@@ -197,6 +222,7 @@ const getLocationAndCoordinates = async (
   getWeeklyDetails();
   insertWeatherData(index, municipality, county, place, backgroundClass);
 };
+
 
 const getWeeklyDetails = () => {
   weatherArrayGroupedByDate = weatherArray.reduce(
@@ -250,6 +276,7 @@ const insertWeatherData = (
   });
 
   // reset elements before filling it
+  weatherEffectDiv.innerHTML = "";
   weatherText.innerHTML = "";
   sunriseSunsetDiv.innerHTML = "";
   weeklyDetails.innerHTML = "";
@@ -273,7 +300,6 @@ const insertWeatherData = (
   } else {
     weatherOverview.classList.add("default-image");
   }
-  
 
   // insert data. Index 0 is always the current weather report in the weatherArray
 
@@ -343,6 +369,10 @@ const insertWeatherData = (
       </div>
     </div>
   `;
+
+  // create variable a variable for symbol code for latest weather report and call the showRain function with it
+  const currentSymbolCode = weatherArray[index].symbolCode;
+  showRain(currentSymbolCode);
 };
 
 const mapSymbolCode = (symbolCode: number) => {

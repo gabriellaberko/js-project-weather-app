@@ -22,6 +22,7 @@ const searchBtnRight = document.getElementById("search-btn-right");
 const arrowButton = document.getElementById("arrow-button");
 const sunriseSunsetDiv = document.getElementById("sunrise-sunset");
 const weatherOverview = document.querySelector(".weather-overview");
+const weatherEffectDiv = document.getElementById("weather-effect");
 /*------ Global variables --------*/
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
@@ -93,6 +94,23 @@ let searchedLocations = [];
 let weatherArrayGroupedByDate = [];
 let index = 1;
 /*------ Logic --------*/
+const showRain = (currentSymbolCode) => {
+    weatherEffectDiv.className = "weather-effect";
+    if (currentSymbolCode) {
+        //
+        if (currentSymbolCode >= 8 && currentSymbolCode <= 24) {
+            weatherEffectDiv.classList.add("rain");
+            const drops = 50;
+            for (let i = 0; i < drops; i++) {
+                const drop = document.createElement("span");
+                drop.style.left = Math.random() * 100 + "%";
+                drop.style.animationDuration = 0.5 + Math.random() * 0.5 + "s";
+                drop.style.animationDelay = Math.random() * 2 + "s";
+                weatherEffectDiv.appendChild(drop);
+            }
+        }
+    }
+};
 const checkIfDayOrNight = (sunriseTimeUTC, sunsetTimeUTC) => {
     const currentTimeUTC = new Date();
     if (sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
@@ -169,6 +187,7 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
         hour12: false,
     });
     // reset elements before filling it
+    weatherEffectDiv.innerHTML = "";
     weatherText.innerHTML = "";
     sunriseSunsetDiv.innerHTML = "";
     weeklyDetails.innerHTML = "";
@@ -243,6 +262,9 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
       </div>
     </div>
   `;
+    // create variable a variable for symbol code for latest weather report and call the showRain function with it
+    const currentSymbolCode = weatherArray[index].symbolCode;
+    showRain(currentSymbolCode);
 };
 const mapSymbolCode = (symbolCode) => {
     // find the object in weatherSymbols that matches the symbol code
