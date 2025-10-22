@@ -1,3 +1,14 @@
+declare const weatherText: HTMLElement;
+declare const weeklyDetails: HTMLElement;
+declare const searchBtn: HTMLElement;
+declare const closeBtn: HTMLElement;
+declare const searchBox: HTMLElement;
+declare const searchInput: HTMLInputElement;
+declare const searchBtnRight: HTMLButtonElement;
+declare const arrowButton: HTMLButtonElement;
+declare const sunriseSunsetDiv: HTMLElement;
+declare const weatherOverview: HTMLElement;
+declare const weatherEffectDiv: HTMLElement;
 interface fetchedWeatherDataFormat {
     time: string;
     intervalParametersStartTime: string;
@@ -44,17 +55,6 @@ interface GroupedWeatherDataFormat {
     temperature: number[];
     symbolCode: number[];
 }
-declare const weatherText: HTMLElement;
-declare const weeklyDetails: HTMLElement;
-declare const searchBtn: HTMLElement;
-declare const closeBtn: HTMLElement;
-declare const searchBox: HTMLElement;
-declare const searchInput: HTMLInputElement;
-declare const searchBtnRight: HTMLButtonElement;
-declare const arrowButton: HTMLButtonElement;
-declare const sunriseSunsetDiv: HTMLElement;
-declare const weatherOverview: HTMLElement;
-declare const weatherEffectDiv: HTMLElement;
 declare const weatherSymbols: {
     id: number;
     description: string;
@@ -71,6 +71,9 @@ declare let searchedLocation: GeoDataFormat;
 declare let searchedLocations: GeoDataFormat[];
 declare let weatherArrayGroupedByDate: GroupedWeatherDataFormat[];
 declare let index: number;
+declare const fetchWeatherData: () => Promise<void>;
+declare const fetchGeoData: (userSearchInput: string) => Promise<void>;
+declare const fetchSunData: () => Promise<void>;
 declare const showRain: (currentSymbolCode: number) => void;
 declare const checkIfDayOrNight: (sunriseTimeUTC: Date, sunsetTimeUTC: Date) => void;
 declare const getIndexOfLocations: () => void;
@@ -79,7 +82,4 @@ declare const getWeeklyDetails: () => void;
 declare const getTempMinMax: (index: number) => string;
 declare const insertWeatherData: (index: number, place: string, municipality: string, county: string, backgroundClass: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
-declare const fetchWeatherData: () => Promise<void>;
-declare const fetchGeoData: (searchInput: string) => Promise<void>;
-declare const fetchSunData: (lon: number, lat: number) => Promise<void>;
 //# sourceMappingURL=script.d.ts.map
