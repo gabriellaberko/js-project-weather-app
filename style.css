@@ -122,14 +122,42 @@ body {
   height: 580px;
   padding: 0 40px;
   color: white;
-  background: linear-gradient(
-    120deg,
-    rgba(133, 137, 255, 1) 0%,
-    rgba(232, 233, 255, 1) 65%
-  );
   clip-path: ellipse(110% 75% at 50% 10%);
   z-index: 0;
 }
+
+.default-image {
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("./images/sky.jpeg");
+    background-size: cover;
+    background-position: center;  
+}
+
+.stockholm {
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("./images/stockholm-2.jpeg");
+    background-size: cover;
+    background-position: center;  
+}
+
+.goteborg {
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("./images/goteborg-1.jpg");
+    background-size: cover;
+    background-position: center;  
+}
+
+.umea {
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("./images/umea-1.jpg");
+    background-size: cover;
+    background-position: center;  
+}
+
 
 .weather-summary {
   display: flex;
@@ -156,7 +184,7 @@ body {
 
 .weather-condition .weather-icon {
   display: flex;
-  min-width: 60px;
+  min-width: 55px;
   height: auto;
 }
 

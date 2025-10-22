@@ -40,6 +40,7 @@ interface GeoDataFormat {
   municipality: string;
   lat: number;
   lon: number;
+  backgroundClass: string;
 }
 
 interface GroupedWeatherDataFormat {
@@ -68,6 +69,7 @@ const arrowButton: HTMLButtonElement = document.getElementById(
 const sunriseSunsetDiv = document.getElementById(
   "sunrise-sunset"
 )! as HTMLElement;
+const weatherOverview = document.querySelector(".weather-overview")! as HTMLElement;
 
 /*------ Global variables --------*/
 
@@ -109,6 +111,7 @@ const locations: GeoDataFormat[] = [
     municipality: "Stockholm",
     lon: 18.062639,
     lat: 59.329468,
+    backgroundClass: "stockholm"
   },
   {
     country: "Sverige",
@@ -117,6 +120,7 @@ const locations: GeoDataFormat[] = [
     municipality: "Göteborg",
     lon: 11.966666,
     lat: 57.716666,
+    backgroundClass: "goteborg"
   },
   {
     country: "Sverige",
@@ -125,6 +129,7 @@ const locations: GeoDataFormat[] = [
     municipality: "Umeå",
     lon: 20.25,
     lat: 63.833333,
+    backgroundClass: "umea"
   },
 ];
 
@@ -186,6 +191,8 @@ const getLocationAndCoordinates = async (
   lon = arrayObject.lon;
   lat = arrayObject.lat;
 
+  const backgroundClass = arrayObject.backgroundClass;
+
   //Fallback for municipality and county
   const municipality = arrayObject.municipality || "Missing value";
   const county = arrayObject.county || "Missing value";
@@ -196,7 +203,7 @@ const getLocationAndCoordinates = async (
   await fetchSunData(lon, lat); // wait for data until calling the other functions
 
   getWeeklyDetails();
-  insertWeatherData(index, municipality, county, place);
+  insertWeatherData(index, municipality, county, place, backgroundClass);
 };
 
 const getWeeklyDetails = () => {
@@ -241,7 +248,8 @@ const insertWeatherData = (
   index: number,
   place: string,
   municipality: string,
-  county: string
+  county: string,
+  backgroundClass: string
 ) => {
   const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
     hour: "2-digit",
@@ -265,6 +273,16 @@ const insertWeatherData = (
     return;
   }
 
+  // change class name for weatherOverview to update the background image depending on place
+
+  weatherOverview.className = "weather-overview"; // reset class names
+  if (backgroundClass) {
+    weatherOverview.classList.add(`${backgroundClass}`);
+  } else {
+    weatherOverview.classList.add("deafult-image");
+  }
+  
+
   // insert data. Index 0 is always the current weather report in the weatherArray
 
   weatherText.innerHTML += `
@@ -275,7 +293,7 @@ const insertWeatherData = (
       <p>Time: ${currentLocalTime}</p>
       <div class="weather-condition">
         <p>${weatherArray[index]?.symbolMeaning}</p>
-        <img class="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
+        <img class="weather-icon" src="weather_icons/centered/solid/${dayOrNight}/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
       </div>
     </div>
   `;
@@ -450,6 +468,7 @@ const fetchGeoData = async (searchInput: string) => {
         municipality: report.municipality,
         lat: Number(report.lat.toFixed(6)),
         lon: Number(report.lon.toFixed(6)),
+        backgroundClass: "default-image"
       };
 
       searchedLocations.push(searchedLocation);

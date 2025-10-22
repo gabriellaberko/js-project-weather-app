@@ -21,6 +21,7 @@ const searchInput = document.getElementById("search-input");
 const searchBtnRight = document.getElementById("search-btn-right");
 const arrowButton = document.getElementById("arrow-button");
 const sunriseSunsetDiv = document.getElementById("sunrise-sunset");
+const weatherOverview = document.querySelector(".weather-overview");
 /*------ Global variables --------*/
 const weatherSymbols = [
     { id: 1, description: "Clear sky" },
@@ -59,6 +60,7 @@ const locations = [
         municipality: "Stockholm",
         lon: 18.062639,
         lat: 59.329468,
+        backgroundClass: "stockholm"
     },
     {
         country: "Sverige",
@@ -67,6 +69,7 @@ const locations = [
         municipality: "Göteborg",
         lon: 11.966666,
         lat: 57.716666,
+        backgroundClass: "goteborg"
     },
     {
         country: "Sverige",
@@ -75,6 +78,7 @@ const locations = [
         municipality: "Umeå",
         lon: 20.25,
         lat: 63.833333,
+        backgroundClass: "umea"
     },
 ];
 let lon = 18.062639; // Stockholm
@@ -119,6 +123,7 @@ const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, vo
     const arrayObject = array[index];
     lon = arrayObject.lon;
     lat = arrayObject.lat;
+    const backgroundClass = arrayObject.backgroundClass;
     //Fallback for municipality and county
     const municipality = arrayObject.municipality || "Missing value";
     const county = arrayObject.county || "Missing value";
@@ -127,7 +132,7 @@ const getLocationAndCoordinates = (array, index) => __awaiter(void 0, void 0, vo
     yield fetchWeatherData(); // wait for data until calling the other functions
     yield fetchSunData(lon, lat); // wait for data until calling the other functions
     getWeeklyDetails();
-    insertWeatherData(index, municipality, county, place);
+    insertWeatherData(index, municipality, county, place, backgroundClass);
 });
 const getWeeklyDetails = () => {
     weatherArrayGroupedByDate = weatherArray.reduce((accumulatedGroupedObjects, weatherReport) => {
@@ -156,7 +161,7 @@ const getTempMinMax = (index) => {
     const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
     return minMaxTemp;
 };
-const insertWeatherData = (index, place, municipality, county) => {
+const insertWeatherData = (index, place, municipality, county, backgroundClass) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
         hour: "2-digit",
@@ -175,6 +180,14 @@ const insertWeatherData = (index, place, municipality, county) => {
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
+    // change class name for weatherOverview to update the background image depending on place
+    weatherOverview.className = "weather-overview"; // reset class names
+    if (backgroundClass) {
+        weatherOverview.classList.add(`${backgroundClass}`);
+    }
+    else {
+        weatherOverview.classList.add("deafult-image");
+    }
     // insert data. Index 0 is always the current weather report in the weatherArray
     weatherText.innerHTML += `
     <h1>${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.temperature}°C</h1>
@@ -184,7 +197,7 @@ const insertWeatherData = (index, place, municipality, county) => {
       <p>Time: ${currentLocalTime}</p>
       <div class="weather-condition">
         <p>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.symbolMeaning}</p>
-        <img class="weather-icon" src="weather_icons/centered/stroke/${dayOrNight}/${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolCode}.svg" alt="weather icon">  
+        <img class="weather-icon" src="weather_icons/centered/solid/${dayOrNight}/${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolCode}.svg" alt="weather icon">  
       </div>
     </div>
   `;
@@ -331,6 +344,7 @@ const fetchGeoData = (searchInput) => __awaiter(void 0, void 0, void 0, function
                 municipality: report.municipality,
                 lat: Number(report.lat.toFixed(6)),
                 lon: Number(report.lon.toFixed(6)),
+                backgroundClass: "default-image"
             };
             searchedLocations.push(searchedLocation);
         });
