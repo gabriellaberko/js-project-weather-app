@@ -52,23 +52,15 @@ interface GroupedWeatherDataFormat {
 
 /*------ DOM elements --------*/
 
-const weatherText: HTMLElement = document.getElementById("weather-text");
-const weeklyDetails: HTMLElement = document.getElementById("weekly-details");
+const weatherText = document.getElementById("weather-text")! as HTMLElement;
+const weeklyDetails = document.getElementById("weekly-details")! as HTMLElement;
 const searchBtn = document.getElementById("search-btn")! as HTMLElement;
 const closeBtn = document.getElementById("close-btn")! as HTMLElement;
 const searchBox = document.querySelector(".search-box")! as HTMLElement;
-const searchInput = document.getElementById(
-  "search-input"
-)! as HTMLInputElement;
-const searchBtnRight = document.getElementById(
-  "search-btn-right"
-)! as HTMLButtonElement;
-const arrowButton: HTMLButtonElement = document.getElementById(
-  "arrow-button"
-)! as HTMLButtonElement;
-const sunriseSunsetDiv = document.getElementById(
-  "sunrise-sunset"
-)! as HTMLElement;
+const searchInput = document.getElementById("search-input")! as HTMLInputElement;
+const searchBtnRight = document.getElementById("search-btn-right")! as HTMLButtonElement;
+const arrowButton: HTMLButtonElement = document.getElementById("arrow-button")! as HTMLButtonElement;
+const sunriseSunsetDiv = document.getElementById("sunrise-sunset")! as HTMLElement;
 const weatherOverview = document.querySelector(".weather-overview")! as HTMLElement;
 
 /*------ Global variables --------*/
@@ -279,7 +271,7 @@ const insertWeatherData = (
   if (backgroundClass) {
     weatherOverview.classList.add(`${backgroundClass}`);
   } else {
-    weatherOverview.classList.add("deafult-image");
+    weatherOverview.classList.add("default-image");
   }
   
 

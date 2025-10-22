@@ -186,7 +186,7 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
         weatherOverview.classList.add(`${backgroundClass}`);
     }
     else {
-        weatherOverview.classList.add("deafult-image");
+        weatherOverview.classList.add("default-image");
     }
     // insert data. Index 0 is always the current weather report in the weatherArray
     weatherText.innerHTML += `
