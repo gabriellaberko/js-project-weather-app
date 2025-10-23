@@ -324,11 +324,6 @@ const getTempMinMax = (index) => {
 };
 const insertWeatherData = (index, place, municipality, county, backgroundClass) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
-    const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    });
     // reset elements before filling it
     weatherEffectDiv.innerHTML = "";
     weatherText.innerHTML = "";
@@ -342,7 +337,7 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
         weatherText.innerHTML = `<p class="error-message">Unfortunately there is no data for this location<p>`;
         return;
     }
-    // change class name for weatherOverview to update the background image depending on place
+    // change class name for weatherOverview to update the background image depending on location
     weatherOverview.className = "weather-overview"; // reset class names
     if (backgroundClass) {
         weatherOverview.classList.add(`${backgroundClass}`);
@@ -350,7 +345,12 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
     else {
         weatherOverview.classList.add("default-image");
     }
-    // insert data. Index 0 is always the current weather report in the weatherArray
+    const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+    // insert data
     weatherText.innerHTML += `
     <h1>${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.temperature}°C</h1>
     <h2>${place}</h2>
@@ -367,7 +367,7 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
     <p>Sunrise: ${localSunriseTime}</p>
     <p>Sunset: ${localSunsetTime}</p>
   `;
-    // tomorrow has index 1
+    // create forecast. Starts from index 1, which equals tomorrow's weather report
     weeklyDetails.innerHTML += `
     <div class="day-box">
       <p class="day">${(_d = weatherArrayGroupedByDate[1]) === null || _d === void 0 ? void 0 : _d.dayOfWeek}</p>

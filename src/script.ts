@@ -448,6 +448,8 @@ const getTempMinMax = (index: number) => {
   return minMaxTemp;
 };
 
+
+
 const insertWeatherData = (
   index: number,
   place: string,
@@ -455,11 +457,6 @@ const insertWeatherData = (
   county: string,
   backgroundClass: string
 ) => {
-  const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
 
   // reset elements before filling it
   weatherEffectDiv.innerHTML = "";
@@ -478,7 +475,7 @@ const insertWeatherData = (
     return;
   }
 
-  // change class name for weatherOverview to update the background image depending on place
+  // change class name for weatherOverview to update the background image depending on location
 
   weatherOverview.className = "weather-overview"; // reset class names
   if (backgroundClass) {
@@ -487,7 +484,14 @@ const insertWeatherData = (
     weatherOverview.classList.add("default-image");
   }
 
-  // insert data. Index 0 is always the current weather report in the weatherArray
+
+  const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  // insert data
 
   weatherText.innerHTML += `
     <h1>${weatherArray[index]?.temperature}°C</h1>
@@ -507,7 +511,7 @@ const insertWeatherData = (
     <p>Sunset: ${localSunsetTime}</p>
   `;
 
-  // tomorrow has index 1
+  // create forecast. Starts from index 1, which equals tomorrow's weather report
   weeklyDetails.innerHTML += `
     <div class="day-box">
       <p class="day">${weatherArrayGroupedByDate[1]?.dayOfWeek}</p>
