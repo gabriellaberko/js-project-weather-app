@@ -230,35 +230,6 @@ const fetchSunData = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 /*------ LOGIC --------*/
-const showRain = (currentSymbolCode) => {
-    // reset class name (to ensure the class rain is removed)
-    weatherEffectDiv.className = "weather-effect";
-    if (currentSymbolCode) {
-        // if the most recent weather report's symbol code matches rainy weather (code 8-24)
-        if (currentSymbolCode >= 8 && currentSymbolCode <= 24) {
-            // add the animation
-            weatherEffectDiv.classList.add("rain");
-            const drops = 50;
-            for (let i = 0; i < drops; i++) {
-                const drop = document.createElement("span");
-                drop.style.left = Math.random() * 100 + "%";
-                drop.style.animationDuration = 0.5 + Math.random() * 0.5 + "s";
-                drop.style.animationDelay = Math.random() * 2 + "s";
-                weatherEffectDiv.appendChild(drop);
-            }
-        }
-    }
-};
-const checkIfDayOrNight = (sunriseTimeUTC, sunsetTimeUTC) => {
-    const currentTimeUTC = new Date();
-    // if current time is between sunrise and sunset
-    if (sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
-        dayOrNight = "day";
-    }
-    else {
-        dayOrNight = "night";
-    }
-};
 const getIndexOfLocations = () => {
     // run as long as index is less than the number of objects in the locations array
     if (index < locations.length) {
@@ -302,7 +273,7 @@ const getWeeklyDetails = () => {
             accumulatedGroupedObjects.push({
                 date: weatherArrayObject.date,
                 dayOfWeek: weatherArrayObject.dayOfWeek,
-                temperature: [Number(weatherArrayObject.temperature)],
+                temperature: [weatherArrayObject.temperature],
                 symbolCode: [weatherArrayObject.symbolCode],
             });
             // if there is a match, push the data to an existing grouped object
@@ -314,23 +285,58 @@ const getWeeklyDetails = () => {
         return accumulatedGroupedObjects;
     }, []);
 };
+const mapSymbolCode = (symbolCode) => {
+    // find the object in weatherSymbols that matches the symbol code
+    const rightWeatherObj = weatherSymbols.find((weatherSymbol) => weatherSymbol.id === symbolCode);
+    // return the description of that object
+    return rightWeatherObj ? rightWeatherObj.description : "";
+};
+const getMaxSymbolCode = (index) => {
+    var _a, _b;
+    const symbolArray = (_b = (_a = weatherArrayGroupedByDate[index]) === null || _a === void 0 ? void 0 : _a.symbolCode) !== null && _b !== void 0 ? _b : [];
+    const maxSymbolCode = Math.max(...symbolArray);
+    return maxSymbolCode;
+};
 const getTempMinMax = (index) => {
-    var _a;
-    const tempArray = (_a = weatherArrayGroupedByDate[index]) === null || _a === void 0 ? void 0 : _a.temperature;
+    var _a, _b;
+    const tempArray = (_b = (_a = weatherArrayGroupedByDate[index]) === null || _a === void 0 ? void 0 : _a.temperature) !== null && _b !== void 0 ? _b : [];
     const minTemp = Math.min(...tempArray);
     const maxTemp = Math.max(...tempArray);
     const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
     return minMaxTemp;
 };
-const getMaxSymbolCode = (index) => {
-    var _a;
-    const symbolArray = (_a = weatherArrayGroupedByDate[index]) === null || _a === void 0 ? void 0 : _a.symbolCode;
-    const maxSymbolCode = Math.max(...symbolArray);
-    return maxSymbolCode;
+const checkIfDayOrNight = (sunriseTimeUTC, sunsetTimeUTC) => {
+    const currentTimeUTC = new Date();
+    // if current time is between sunrise and sunset
+    if (sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
+        dayOrNight = "day";
+    }
+    else {
+        dayOrNight = "night";
+    }
+};
+const showRain = (currentSymbolCode) => {
+    // reset class name (to ensure the class rain is removed)
+    weatherEffectDiv.className = "weather-effect";
+    if (currentSymbolCode) {
+        // if the most recent weather report's symbol code matches rainy weather (code 8-24)
+        if (currentSymbolCode >= 8 && currentSymbolCode <= 24) {
+            // add the animation
+            weatherEffectDiv.classList.add("rain");
+            const drops = 50;
+            for (let i = 0; i < drops; i++) {
+                const drop = document.createElement("span");
+                drop.style.left = Math.random() * 100 + "%";
+                drop.style.animationDuration = 0.5 + Math.random() * 0.5 + "s";
+                drop.style.animationDelay = Math.random() * 2 + "s";
+                weatherEffectDiv.appendChild(drop);
+            }
+        }
+    }
 };
 const insertWeatherData = (index, place, municipality, county, backgroundClass) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-    // reset elements before filling it
+    // reset elements before filling them
     weatherEffectDiv.innerHTML = "";
     weatherText.innerHTML = "";
     sunriseSunsetDiv.innerHTML = "";
@@ -356,16 +362,20 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
         minute: "2-digit",
         hour12: false,
     });
-    // insert data
+    // create a variable for the symbol code for the latest weather report 
+    const currentSymbolCode = (_b = (_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.symbolCode) !== null && _b !== void 0 ? _b : 0;
+    // to determine if the current symbol code should activate rain animation or not
+    showRain(currentSymbolCode);
+    /* ----- insert data ------ */
     weatherText.innerHTML += `
-    <h1>${(_a = weatherArray[index]) === null || _a === void 0 ? void 0 : _a.temperature}°C</h1>
+    <h1>${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.temperature}°C</h1>
     <h2>${place}</h2>
     <h3>${municipality}, ${county}</h3>
     <div class="time-condition-flex-container">
       <p>Time: ${currentLocalTime}</p>
       <div class="weather-condition">
-        <p>${(_b = weatherArray[index]) === null || _b === void 0 ? void 0 : _b.symbolMeaning}</p>
-        <img class="weather-icon" src="weather_icons/centered/solid/${dayOrNight}/${(_c = weatherArray[index]) === null || _c === void 0 ? void 0 : _c.symbolCode}.svg" alt="weather icon">  
+        <p>${(_d = weatherArray[index]) === null || _d === void 0 ? void 0 : _d.symbolMeaning}</p>
+        <img class="weather-icon" src="weather_icons/centered/solid/${dayOrNight}/${currentSymbolCode}.svg" alt="weather icon">  
       </div>
     </div>
   `;
@@ -376,62 +386,58 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
     // create forecast. Starts from index 1, which equals tomorrow's weather report
     weeklyDetails.innerHTML += `
     <div class="day-box">
-      <p class="day">${(_d = weatherArrayGroupedByDate[1]) === null || _d === void 0 ? void 0 : _d.dayOfWeek}</p>
+      <p class="day">${(_e = weatherArrayGroupedByDate[1]) === null || _e === void 0 ? void 0 : _e.dayOfWeek}</p>
       <div class="details">
         <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(1)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(1)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_e = weatherArrayGroupedByDate[2]) === null || _e === void 0 ? void 0 : _e.dayOfWeek}</p>
+      <p class="day">${(_f = weatherArrayGroupedByDate[2]) === null || _f === void 0 ? void 0 : _f.dayOfWeek}</p>
       <div class="details">
         <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(2)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(2)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_f = weatherArrayGroupedByDate[3]) === null || _f === void 0 ? void 0 : _f.dayOfWeek}</p>
+      <p class="day">${(_g = weatherArrayGroupedByDate[3]) === null || _g === void 0 ? void 0 : _g.dayOfWeek}</p>
       <div class="details">
         <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(3)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(3)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_g = weatherArrayGroupedByDate[4]) === null || _g === void 0 ? void 0 : _g.dayOfWeek}</p>
+      <p class="day">${(_h = weatherArrayGroupedByDate[4]) === null || _h === void 0 ? void 0 : _h.dayOfWeek}</p>
       <div class="details">
         <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(4)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(4)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_h = weatherArrayGroupedByDate[5]) === null || _h === void 0 ? void 0 : _h.dayOfWeek}</p>
+      <p class="day">${(_j = weatherArrayGroupedByDate[5]) === null || _j === void 0 ? void 0 : _j.dayOfWeek}</p>
       <div class="details">
         <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(5)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(5)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_j = weatherArrayGroupedByDate[6]) === null || _j === void 0 ? void 0 : _j.dayOfWeek}</p>
+      <p class="day">${(_k = weatherArrayGroupedByDate[6]) === null || _k === void 0 ? void 0 : _k.dayOfWeek}</p>
       <div class="details">
         <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(6)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(6)}</p>
       </div>
     </div>
   `;
-    // create variable a variable for symbol code for latest weather report and call the showRain function with it
-    const currentSymbolCode = (_k = weatherArray[index]) === null || _k === void 0 ? void 0 : _k.symbolCode;
-    showRain(currentSymbolCode);
-};
-const mapSymbolCode = (symbolCode) => {
-    // find the object in weatherSymbols that matches the symbol code
-    const rightWeatherObj = weatherSymbols.find((weatherSymbol) => weatherSymbol.id === symbolCode);
-    // return the description of that object
-    return rightWeatherObj ? rightWeatherObj.description : "";
 };
 /*------ EVENT LISTENERS --------*/
 document.addEventListener("DOMContentLoaded", () => {
     getLocationAndCoordinates(locations, 0);
 });
+arrowButton.addEventListener("click", () => {
+    getIndexOfLocations();
+});
+/* ---- search function ---- */
+// functionality for open/close search bar
 searchBtn.addEventListener("click", () => {
     searchBox.classList.add("active");
     closeBtn.style.display = "inline-block";
@@ -445,6 +451,7 @@ closeBtn.addEventListener("click", () => {
     searchBtn.style.display = "inline-block";
     searchInput.value = "";
 });
+// functionality for capturing user search input on keypress enter or by clicking the search submit button
 searchBtnRight.addEventListener("click", (event) => {
     event.preventDefault();
     const userSearchInput = searchInput.value.trim();
@@ -460,8 +467,5 @@ searchInput.addEventListener("keypress", (event) => {
             fetchGeoData(userSearchInput);
         }
     }
-});
-arrowButton.addEventListener("click", () => {
-    getIndexOfLocations();
 });
 //# sourceMappingURL=script.js.map

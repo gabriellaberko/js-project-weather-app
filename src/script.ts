@@ -320,42 +320,6 @@ const fetchSunData = async () => {
 /*------ LOGIC --------*/
 
 
-const showRain = (currentSymbolCode: number) => {
-  // reset class name (to ensure the class rain is removed)
-  weatherEffectDiv.className = "weather-effect";
-
-  if (currentSymbolCode) {
-    // if the most recent weather report's symbol code matches rainy weather (code 8-24)
-    if(currentSymbolCode >= 8 && currentSymbolCode <= 24) {
-      // add the animation
-      weatherEffectDiv.classList.add("rain");
-
-      const drops = 50;
-
-      for (let i = 0; i < drops; i++) {
-        const drop = document.createElement("span");
-        drop.style.left = Math.random() * 100 + "%";
-        drop.style.animationDuration = 0.5 + Math.random() * 0.5 + "s";
-        drop.style.animationDelay = Math.random() * 2 + "s";
-        weatherEffectDiv.appendChild(drop);
-      }
-    }
-  }
-};
-
-
-
-const checkIfDayOrNight = (sunriseTimeUTC: Date, sunsetTimeUTC: Date) => {
-  const currentTimeUTC = new Date();
-  // if current time is between sunrise and sunset
-  if (sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
-    dayOrNight = "day";
-  } else {
-    dayOrNight = "night";
-  }
-};
-
-
 
 const getIndexOfLocations = () => {
   // run as long as index is less than the number of objects in the locations array
@@ -422,7 +386,7 @@ const getWeeklyDetails = () => {
         accumulatedGroupedObjects.push({
           date: weatherArrayObject.date,
           dayOfWeek: weatherArrayObject.dayOfWeek,
-          temperature: [Number(weatherArrayObject.temperature)],
+          temperature: [weatherArrayObject.temperature],
           symbolCode: [weatherArrayObject.symbolCode],
         });
       // if there is a match, push the data to an existing grouped object
@@ -439,8 +403,29 @@ const getWeeklyDetails = () => {
 
 
 
+const mapSymbolCode = (symbolCode: number) => {
+  // find the object in weatherSymbols that matches the symbol code
+  const rightWeatherObj = weatherSymbols.find(
+    (weatherSymbol) => weatherSymbol.id === symbolCode
+  );
+
+  // return the description of that object
+  return rightWeatherObj ? rightWeatherObj.description : "";
+};
+
+
+
+const getMaxSymbolCode = (index: number) => {
+  const symbolArray = weatherArrayGroupedByDate[index]?.symbolCode ?? [];
+  const maxSymbolCode = Math.max(...symbolArray);
+
+  return maxSymbolCode;
+};
+
+
+
 const getTempMinMax = (index: number) => {
-  const tempArray = weatherArrayGroupedByDate[index]?.temperature;
+  const tempArray = weatherArrayGroupedByDate[index]?.temperature ?? [];
   const minTemp = Math.min(...tempArray);
   const maxTemp = Math.max(...tempArray);
   const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
@@ -449,11 +434,40 @@ const getTempMinMax = (index: number) => {
 };
 
 
-const getMaxSymbolCode = (index: number) => {
-  const symbolArray = weatherArrayGroupedByDate[index]?.symbolCode;
-  const maxSymbolCode = Math.max(...symbolArray);
 
-  return maxSymbolCode;
+const checkIfDayOrNight = (sunriseTimeUTC: Date, sunsetTimeUTC: Date) => {
+  const currentTimeUTC = new Date();
+  // if current time is between sunrise and sunset
+  if (sunriseTimeUTC < currentTimeUTC && currentTimeUTC < sunsetTimeUTC) {
+    dayOrNight = "day";
+  } else {
+    dayOrNight = "night";
+  }
+};
+
+
+
+const showRain = (currentSymbolCode: number) => {
+  // reset class name (to ensure the class rain is removed)
+  weatherEffectDiv.className = "weather-effect";
+
+  if (currentSymbolCode) {
+    // if the most recent weather report's symbol code matches rainy weather (code 8-24)
+    if(currentSymbolCode >= 8 && currentSymbolCode <= 24) {
+      // add the animation
+      weatherEffectDiv.classList.add("rain");
+
+      const drops = 50;
+
+      for (let i = 0; i < drops; i++) {
+        const drop = document.createElement("span");
+        drop.style.left = Math.random() * 100 + "%";
+        drop.style.animationDuration = 0.5 + Math.random() * 0.5 + "s";
+        drop.style.animationDelay = Math.random() * 2 + "s";
+        weatherEffectDiv.appendChild(drop);
+      }
+    }
+  }
 };
 
 
@@ -466,7 +480,7 @@ const insertWeatherData = (
   backgroundClass: string
 ) => {
 
-  // reset elements before filling it
+  // reset elements before filling them
   weatherEffectDiv.innerHTML = "";
   weatherText.innerHTML = "";
   sunriseSunsetDiv.innerHTML = "";
@@ -492,14 +506,20 @@ const insertWeatherData = (
     weatherOverview.classList.add("default-image");
   }
 
-
   const currentLocalTime = new Date().toLocaleTimeString("sv-SE", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
   });
 
-  // insert data
+  // create a variable for the symbol code for the latest weather report 
+  const currentSymbolCode = weatherArray[index]?.symbolCode ?? 0;
+
+  // to determine if the current symbol code should activate rain animation or not
+  showRain(currentSymbolCode);
+
+
+  /* ----- insert data ------ */
 
   weatherText.innerHTML += `
     <h1>${weatherArray[index]?.temperature}°C</h1>
@@ -509,7 +529,7 @@ const insertWeatherData = (
       <p>Time: ${currentLocalTime}</p>
       <div class="weather-condition">
         <p>${weatherArray[index]?.symbolMeaning}</p>
-        <img class="weather-icon" src="weather_icons/centered/solid/${dayOrNight}/${weatherArray[index]?.symbolCode}.svg" alt="weather icon">  
+        <img class="weather-icon" src="weather_icons/centered/solid/${dayOrNight}/${currentSymbolCode}.svg" alt="weather icon">  
       </div>
     </div>
   `;
@@ -564,30 +584,30 @@ const insertWeatherData = (
       </div>
     </div>
   `;
-
-  // create variable a variable for symbol code for latest weather report and call the showRain function with it
-  const currentSymbolCode = weatherArray[index]?.symbolCode;
-  showRain(currentSymbolCode);
 };
-
-const mapSymbolCode = (symbolCode: number) => {
-  // find the object in weatherSymbols that matches the symbol code
-  const rightWeatherObj = weatherSymbols.find(
-    (weatherSymbol) => weatherSymbol.id === symbolCode
-  );
-
-  // return the description of that object
-  return rightWeatherObj ? rightWeatherObj.description : "";
-};
-
 
 
 
 /*------ EVENT LISTENERS --------*/
 
+
+
 document.addEventListener("DOMContentLoaded", () => {
   getLocationAndCoordinates(locations, 0);
 });
+
+
+
+arrowButton.addEventListener("click", () => {
+  getIndexOfLocations();
+});
+
+
+
+/* ---- search function ---- */
+
+
+// functionality for open/close search bar
 
 searchBtn.addEventListener("click", () => {
   searchBox.classList.add("active");
@@ -595,6 +615,8 @@ searchBtn.addEventListener("click", () => {
   searchBtn.style.display = "none";
   searchInput.focus();
 });
+
+
 
 closeBtn.addEventListener("click", () => {
   searchInput.value = "";
@@ -604,6 +626,9 @@ closeBtn.addEventListener("click", () => {
   searchInput.value = "";
 });
 
+
+// functionality for capturing user search input on keypress enter or by clicking the search submit button
+
 searchBtnRight.addEventListener("click", (event) => {
   event.preventDefault();
   const userSearchInput = searchInput.value.trim();
@@ -611,6 +636,8 @@ searchBtnRight.addEventListener("click", (event) => {
     fetchGeoData(userSearchInput);
   }
 });
+
+
 
 searchInput.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
@@ -620,8 +647,4 @@ searchInput.addEventListener("keypress", (event) => {
       fetchGeoData(userSearchInput);
     }
   }
-});
-
-arrowButton.addEventListener("click", () => {
-  getIndexOfLocations();
 });
