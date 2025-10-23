@@ -302,7 +302,7 @@ const getWeeklyDetails = () => {
             accumulatedGroupedObjects.push({
                 date: weatherArrayObject.date,
                 dayOfWeek: weatherArrayObject.dayOfWeek,
-                temperature: [weatherArrayObject.temperature],
+                temperature: [Number(weatherArrayObject.temperature)],
                 symbolCode: [weatherArrayObject.symbolCode],
             });
             // if there is a match, push the data to an existing grouped object
@@ -322,8 +322,14 @@ const getTempMinMax = (index) => {
     const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
     return minMaxTemp;
 };
+const getMaxSymbolCode = (index) => {
+    var _a;
+    const symbolArray = (_a = weatherArrayGroupedByDate[index]) === null || _a === void 0 ? void 0 : _a.symbolCode;
+    const maxSymbolCode = Math.max(...symbolArray);
+    return maxSymbolCode;
+};
 const insertWeatherData = (index, place, municipality, county, backgroundClass) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     // reset elements before filling it
     weatherEffectDiv.innerHTML = "";
     weatherText.innerHTML = "";
@@ -372,41 +378,48 @@ const insertWeatherData = (index, place, municipality, county, backgroundClass) 
     <div class="day-box">
       <p class="day">${(_d = weatherArrayGroupedByDate[1]) === null || _d === void 0 ? void 0 : _d.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_e = weatherArrayGroupedByDate[1]) === null || _e === void 0 ? void 0 : _e.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(1)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(1)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_f = weatherArrayGroupedByDate[2]) === null || _f === void 0 ? void 0 : _f.dayOfWeek}</p>
+      <p class="day">${(_e = weatherArrayGroupedByDate[2]) === null || _e === void 0 ? void 0 : _e.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_g = weatherArrayGroupedByDate[2]) === null || _g === void 0 ? void 0 : _g.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(2)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(2)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_h = weatherArrayGroupedByDate[3]) === null || _h === void 0 ? void 0 : _h.dayOfWeek}</p>
+      <p class="day">${(_f = weatherArrayGroupedByDate[3]) === null || _f === void 0 ? void 0 : _f.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_j = weatherArrayGroupedByDate[3]) === null || _j === void 0 ? void 0 : _j.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(3)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(3)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_k = weatherArrayGroupedByDate[4]) === null || _k === void 0 ? void 0 : _k.dayOfWeek}</p>
+      <p class="day">${(_g = weatherArrayGroupedByDate[4]) === null || _g === void 0 ? void 0 : _g.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_l = weatherArrayGroupedByDate[4]) === null || _l === void 0 ? void 0 : _l.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(4)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(4)}</p>
       </div>
     </div>
     <div class="day-box">
-      <p class="day">${(_m = weatherArrayGroupedByDate[5]) === null || _m === void 0 ? void 0 : _m.dayOfWeek}</p>
+      <p class="day">${(_h = weatherArrayGroupedByDate[5]) === null || _h === void 0 ? void 0 : _h.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${(_o = weatherArrayGroupedByDate[5]) === null || _o === void 0 ? void 0 : _o.symbolCode[2]}.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(5)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(5)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${(_j = weatherArrayGroupedByDate[6]) === null || _j === void 0 ? void 0 : _j.dayOfWeek}</p>
+      <div class="details">
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(6)}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(6)}</p>
       </div>
     </div>
   `;
     // create variable a variable for symbol code for latest weather report and call the showRain function with it
-    const currentSymbolCode = (_p = weatherArray[index]) === null || _p === void 0 ? void 0 : _p.symbolCode;
+    const currentSymbolCode = (_k = weatherArray[index]) === null || _k === void 0 ? void 0 : _k.symbolCode;
     showRain(currentSymbolCode);
 };
 const mapSymbolCode = (symbolCode) => {

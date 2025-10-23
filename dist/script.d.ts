@@ -80,6 +80,7 @@ declare const getIndexOfLocations: () => void;
 declare const getLocationAndCoordinates: (array: GeoDataFormat[], index: number) => Promise<void>;
 declare const getWeeklyDetails: () => void;
 declare const getTempMinMax: (index: number) => string;
+declare const getMaxSymbolCode: (index: number) => number;
 declare const insertWeatherData: (index: number, place: string, municipality: string, county: string, backgroundClass: string) => void;
 declare const mapSymbolCode: (symbolCode: number) => string;
 //# sourceMappingURL=script.d.ts.map

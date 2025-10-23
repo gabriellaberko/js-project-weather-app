@@ -422,7 +422,7 @@ const getWeeklyDetails = () => {
         accumulatedGroupedObjects.push({
           date: weatherArrayObject.date,
           dayOfWeek: weatherArrayObject.dayOfWeek,
-          temperature: [weatherArrayObject.temperature],
+          temperature: [Number(weatherArrayObject.temperature)],
           symbolCode: [weatherArrayObject.symbolCode],
         });
       // if there is a match, push the data to an existing grouped object
@@ -446,6 +446,14 @@ const getTempMinMax = (index: number) => {
   const minMaxTemp = `${maxTemp}°C / ${minTemp}°C`;
 
   return minMaxTemp;
+};
+
+
+const getMaxSymbolCode = (index: number) => {
+  const symbolArray = weatherArrayGroupedByDate[index]?.symbolCode;
+  const maxSymbolCode = Math.max(...symbolArray);
+
+  return maxSymbolCode;
 };
 
 
@@ -516,46 +524,43 @@ const insertWeatherData = (
     <div class="day-box">
       <p class="day">${weatherArrayGroupedByDate[1]?.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${
-          weatherArrayGroupedByDate[1]?.symbolCode[2]
-        }.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(1)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(1)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${weatherArrayGroupedByDate[2]?.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${
-          weatherArrayGroupedByDate[2]?.symbolCode[2]
-        }.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(2)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(2)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${weatherArrayGroupedByDate[3]?.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${
-          weatherArrayGroupedByDate[3]?.symbolCode[2]
-        }.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(3)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(3)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${weatherArrayGroupedByDate[4]?.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${
-          weatherArrayGroupedByDate[4]?.symbolCode[2]
-        }.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(4)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(4)}</p>
       </div>
     </div>
     <div class="day-box">
       <p class="day">${weatherArrayGroupedByDate[5]?.dayOfWeek}</p>
       <div class="details">
-        <img class="weather-icon" src="weather_icons/centered/stroke/day/${
-          weatherArrayGroupedByDate[5]?.symbolCode[2]
-        }.svg" alt="weather icon"> 
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(5)}.svg" alt="weather icon"> 
         <p class="degrees">${getTempMinMax(5)}</p>
+      </div>
+    </div>
+    <div class="day-box">
+      <p class="day">${weatherArrayGroupedByDate[6]?.dayOfWeek}</p>
+      <div class="details">
+        <img class="weather-icon" src="weather_icons/centered/stroke/day/${getMaxSymbolCode(6)}.svg" alt="weather icon"> 
+        <p class="degrees">${getTempMinMax(6)}</p>
       </div>
     </div>
   `;
